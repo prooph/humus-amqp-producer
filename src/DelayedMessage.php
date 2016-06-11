@@ -12,6 +12,8 @@ declare (strict_types=1);
 
 namespace Prooph\ServiceBus\Message\HumusAmqp;
 
+use Prooph\Common\Messaging\Message;
+
 /**
  * Interface to represent delayed messages (aka messages that are processed in the future instead of now)
  * Usually you would implement these for commands that should be executed at a later time
@@ -19,7 +21,7 @@ namespace Prooph\ServiceBus\Message\HumusAmqp;
  * Interface DelayedMessage
  * @package Prooph\ServiceBus\Message\HumusAmqp
  */
-interface DelayedMessage
+interface DelayedMessage extends Message
 {
     /**
      * @return int the delay in milliseconds
