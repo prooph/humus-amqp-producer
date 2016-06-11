@@ -31,9 +31,10 @@ abstract class DelayedCommand extends Command implements DelayedMessage
      * @param DateTimeImmutable $dateTime
      * @return DelayedCommand
      */
-    public function executeAt(DateTimeImmutable $dateTime)
+    public function executeAt(DateTimeImmutable $dateTime) : DelayedCommand
     {
         $delayedCommand = clone $this;
+        $delayedCommand->executeAt = $dateTime;
         $delayedCommand->metadata['execute_at'] = $dateTime->format('Y-m-d\TH:i:s.u');
 
         return $delayedCommand;
@@ -42,9 +43,9 @@ abstract class DelayedCommand extends Command implements DelayedMessage
     /**
      * @return int the delay in milliseconds
      */
-    public function delay()
+    public function delay() : int
     {
-        return floor(((float) $this->executeAt->format('U.u') - (float) $this->createdAt->format('U.u')) * 1000);
+        return (int) floor(((float) $this->executeAt->format('U.u') - (float) $this->createdAt->format('U.u')) * 1000);
     }
 
     /**
@@ -53,7 +54,7 @@ abstract class DelayedCommand extends Command implements DelayedMessage
      * @param array $messageData
      * @return static
      */
-    public static function fromArray(array $messageData)
+    public static function fromArray(array $messageData) : DelayedCommand
     {
         $message = parent::fromArray($messageData);
         /** @var $message self */

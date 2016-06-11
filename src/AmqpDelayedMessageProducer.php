@@ -12,6 +12,7 @@ declare (strict_types=1);
 
 namespace Prooph\ServiceBus\Message\HumusAmqp;
 
+use Humus\Amqp\Constants;
 use Humus\Amqp\Producer;
 use Prooph\Common\Messaging\Message;
 use Prooph\Common\Messaging\MessageConverter;
@@ -50,6 +51,7 @@ final class AmqpDelayedMessageProducer
     {
         $this->producer = $producer;
         $this->messageConverter = $messageConverter;
+        $this->appId = $appId;
     }
 
     /**
@@ -82,7 +84,7 @@ final class AmqpDelayedMessageProducer
             'type' => $message->messageName()
         ];
 
-        $this->producer->publish($data, $message->messageName(), $attributes);
+        $this->producer->publish($data, $message->messageName(), Constants::AMQP_NOPARAM, $attributes);
     }
 
     /**
