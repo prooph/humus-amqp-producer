@@ -78,12 +78,6 @@ class  AmqpCommandConsumerCallbackTest extends TestCase
      */
     public function it_rejects_message_when_created_at_missing()
     {
-        $time = (string) microtime(true);
-        if (false === strpos($time, '.')) {
-            $time .= '.0000';
-        }
-        $now = \DateTimeImmutable::createFromFormat('U.u', $time);
-
         $envelope = $this->prophesize(Envelope::class);
         $envelope
             ->getBody()
@@ -91,8 +85,6 @@ class  AmqpCommandConsumerCallbackTest extends TestCase
             ->shouldBeCalled();
 
         $queue = $this->prophesize(Queue::class);
-
-        $command = $this->prophesize(Command::class);
 
         $messageFactory = $this->prophesize(MessageFactory::class);
 
