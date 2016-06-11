@@ -82,7 +82,7 @@ final class AmqpMessageProducerFactory implements ProvidesDefaultOptions, Requir
         return new AmqpMessageProducer(
             $container->get($options['producer']),
             $container->get($options['message_converter']),
-            $container->get($options['app_id'])
+            $options['app_id']
         );
     }
 
