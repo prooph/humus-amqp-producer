@@ -68,7 +68,6 @@ class  AmqpMessageProducerTest extends TestCase
 
         $messageProducer = new AmqpMessageProducer($producer->reveal(), $messageConverter->reveal(), 'test_app');
         $messageProducer($message->reveal());
-
     }
 
     /**

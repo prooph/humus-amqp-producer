@@ -69,26 +69,27 @@ class DelayedCommandTest extends TestCase
      */
     private function delayedComamnd()
     {
-        return new class extends DelayedCommand {
+        return new class extends DelayedCommand
+ {
 
-            protected $messageName = 'test-delayed-command';
+     protected $messageName = 'test-delayed-command';
 
-            protected $payload;
+     protected $payload;
 
-            public function __construct()
-            {
-                $this->init();
-            }
+     public function __construct()
+     {
+         $this->init();
+     }
 
-            public function payload() : array
-            {
-                return $this->payload;
-            }
+     public function payload() : array
+     {
+         return $this->payload;
+     }
 
-            protected function setPayload(array $payload)
-            {
-                $this->payload = $payload;
-            }
-        };
+     protected function setPayload(array $payload)
+     {
+         $this->payload = $payload;
+     }
+ };
     }
 }

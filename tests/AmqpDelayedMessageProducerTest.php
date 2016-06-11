@@ -77,7 +77,6 @@ class  AmqpDelayedMessageProducerTest extends TestCase
 
         $messageProducer = new AmqpDelayedMessageProducer($producer->reveal(), $messageConverter->reveal(), 'test_app');
         $messageProducer($message->reveal());
-
     }
 
     /**

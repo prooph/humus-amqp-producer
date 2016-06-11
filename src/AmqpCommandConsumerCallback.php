@@ -56,7 +56,7 @@ final class AmqpCommandConsumerCallback
     {
         $data = json_decode($envelope->getBody(), true);
         $data['created_at'] = DateTimeImmutable::createFromFormat(
-            'Y-m-d\TH:i:s.u', 
+            'Y-m-d\TH:i:s.u',
             $data['created_at'],
             new DateTimeZone('UTC')
         );
