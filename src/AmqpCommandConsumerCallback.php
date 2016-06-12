@@ -73,7 +73,7 @@ final class AmqpCommandConsumerCallback
         try {
             $command = $this->messageFactory->createMessageFromArray($envelope->getType(), $data);
             $this->commandBus->dispatch($command);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return DeliveryResult::MSG_REJECT();
         }
 

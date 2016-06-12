@@ -73,7 +73,7 @@ final class AmqpEventConsumerCallback
         try {
             $event = $this->messageFactory->createMessageFromArray($envelope->getType(), $data);
             $this->eventBus->dispatch($event);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return DeliveryResult::MSG_REJECT();
         }
 
