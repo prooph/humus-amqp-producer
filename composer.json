@@ -35,6 +35,7 @@
     },
     "require-dev": {
         "container-interop/container-interop": "^1.1",
+        "prooph/event-store": "^6.3",
         "sandrokeil/interop-config": "^1.0",
         "phpunit/phpunit": "^5.4",
         "phpspec/prophecy": "^1.6",
