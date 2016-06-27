@@ -18,6 +18,7 @@ use Humus\Amqp\DeliveryResult;
 use Humus\Amqp\Envelope;
 use Humus\Amqp\Queue;
 use Prooph\Common\Messaging\MessageFactory;
+use Prooph\EventStore\Exception\ConcurrencyException;
 use Prooph\ServiceBus\CommandBus;
 
 /**
@@ -74,6 +75,11 @@ final class AmqpCommandConsumerCallback
             $command = $this->messageFactory->createMessageFromArray($envelope->getType(), $data);
             $this->commandBus->dispatch($command);
         } catch (\Throwable $e) {
+            while ($previous = $e->getPrevious()) {
+                if ($previous instanceof ConcurrencyException) {
+                    return DeliveryResult::MSG_REJECT_REQUEUE();
+                }
+            }
             return DeliveryResult::MSG_REJECT();
         }
 
