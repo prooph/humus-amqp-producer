@@ -75,8 +75,8 @@ final class AmqpCommandConsumerCallback
             $command = $this->messageFactory->createMessageFromArray($envelope->getType(), $data);
             $this->commandBus->dispatch($command);
         } catch (\Throwable $e) {
-            while ($previous = $e->getPrevious()) {
-                if ($previous instanceof ConcurrencyException) {
+            while ($e = $e->getPrevious()) {
+                if ($e instanceof ConcurrencyException) {
                     return DeliveryResult::MSG_REJECT_REQUEUE();
                 }
             }
