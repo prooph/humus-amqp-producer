@@ -87,7 +87,7 @@ final class PublishConfirmSelectPlugin implements Plugin
     public function onEventStoreCommitPostWaitForConfirm(ActionEvent $actionEvent)
     {
         if ($this->doWait) {
-            $this->producer->waitForConfirm(1);
+            $this->producer->waitForConfirm(2);
         }
     }
 }
