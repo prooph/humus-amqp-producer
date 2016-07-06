@@ -79,7 +79,7 @@ final class PublishConfirmSelectPlugin implements Plugin
     {
         $recordedEvents = $actionEvent->getParam('recordedEvents', []);
 
-        $this->countRecordedEvents = count($recordedEvents);
+        $this->countRecordedEvents = count(iterator_to_array($recordedEvents));
     }
 
     /**
