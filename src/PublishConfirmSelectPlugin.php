@@ -89,6 +89,10 @@ final class PublishConfirmSelectPlugin implements Plugin
      */
     public function onEventStoreCommitPostTwo(ActionEvent $actionEvent)
     {
-        $this->producer->waitForConfirm(1);
+        try {
+            $this->producer->waitForConfirm(1);    
+        } finally {
+            $this->countRecordedEvents = 0;
+        }
     }
 }
