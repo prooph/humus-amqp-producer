@@ -30,7 +30,7 @@
         "php": "~7.0",
         "beberlei/assert": "~2.5",
         "prooph/common" : "~3.7",
-        "prolic/humus-amqp": "1.0.0-BETA.1",
+        "prolic/humus-amqp": ">=1.0-dev",
         "prooph/service-bus" : "^5.1"
     },
     "require-dev": {
