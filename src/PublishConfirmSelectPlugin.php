@@ -30,6 +30,11 @@ final class PublishConfirmSelectPlugin implements Plugin
     private $producer;
 
     /**
+     * @var int
+     */
+    private $countRecordedEvents;
+
+    /**
      * @param Producer $producer
      */
     public function __construct(Producer $producer)
@@ -44,7 +49,8 @@ final class PublishConfirmSelectPlugin implements Plugin
     public function setUp(EventStore $eventStore)
     {
         $eventStore->getActionEventEmitter()->attachListener('commit.pre', [$this, 'onEventStoreCommitPre']);
-        $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'onEventStoreCommitPost'], -1000);
+        $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'onEventStoreCommitPostOne'], 100);
+        $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'onEventStoreCommitPostTwo'], -1000);
     }
 
     /**
@@ -54,15 +60,11 @@ final class PublishConfirmSelectPlugin implements Plugin
      */
     public function onEventStoreCommitPre(ActionEvent $actionEvent)
     {
-        $recordedEvents = $actionEvent->getParam('recordedEvents', []);
-
-        $countRecordedEvents = count($recordedEvents);
-
         $this->producer->confirmSelect();
 
         $this->producer->setConfirmCallback(
-            function (int $deliveryTag, bool $multiple) use (& $countRecordedEvents) {
-                return ($deliveryTag <= $countRecordedEvents);
+            function (int $deliveryTag, bool $multiple) {
+                return ($deliveryTag <= $this->countRecordedEvents);
             },
             function (int $deliveryTag, bool $multiple, bool $requeue) use (&$result) {
                 throw new RuntimeException('Could not publish all events');
@@ -71,11 +73,21 @@ final class PublishConfirmSelectPlugin implements Plugin
     }
 
     /**
+     * @param ActionEvent $actionEvent
+     */
+    public function onEventStoreCommitPostOne(ActionEvent $actionEvent)
+    {
+        $recordedEvents = $actionEvent->getParam('recordedEvents', []);
+
+        $this->countRecordedEvents = count($recordedEvents);
+    }
+
+    /**
      * Publish recorded events on the event bus
      *
      * @param ActionEvent $actionEvent
      */
-    public function onEventStoreCommitPost(ActionEvent $actionEvent)
+    public function onEventStoreCommitPostTwo(ActionEvent $actionEvent)
     {
         $this->producer->waitForConfirm(1);
     }
