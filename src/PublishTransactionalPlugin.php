@@ -42,8 +42,8 @@ final class PublishTransactionalPlugin implements Plugin
      */
     public function setUp(EventStore $eventStore)
     {
-        $eventStore->getActionEventEmitter()->attachListener('commit.pre', [$this, 'onEventStoreCommitPre']);
-        $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'onEventStoreCommitPost'], -1000);
+        $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'onEventStoreCommitPostStartTransaction'], 1000);
+        $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'onEventStoreCommitPostCommitTransaction'], -1000);
     }
 
     /**
@@ -51,7 +51,7 @@ final class PublishTransactionalPlugin implements Plugin
      *
      * @param ActionEvent $actionEvent
      */
-    public function onEventStoreCommitPre(ActionEvent $actionEvent)
+    public function onEventStoreCommitPostStartTransaction(ActionEvent $actionEvent)
     {
         $this->producer->startTransaction();
     }
@@ -61,7 +61,7 @@ final class PublishTransactionalPlugin implements Plugin
      *
      * @param ActionEvent $actionEvent
      */
-    public function onEventStoreCommitPost(ActionEvent $actionEvent)
+    public function onEventStoreCommitPostCommitTransaction(ActionEvent $actionEvent)
     {
         $this->producer->commitTransaction();
     }
