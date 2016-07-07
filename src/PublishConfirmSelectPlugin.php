@@ -75,7 +75,7 @@ final class PublishConfirmSelectPlugin implements Plugin
 
         $this->producer->setConfirmCallback(
             function (int $deliveryTag, bool $multiple) use (&$countRecordedEvents) {
-                return ($deliveryTag <= $countRecordedEvents);
+                return ($deliveryTag < $countRecordedEvents);
             },
             function (int $deliveryTag, bool $multiple, bool $requeue) use (&$result) {
                 throw new RuntimeException('Could not publish all events');
