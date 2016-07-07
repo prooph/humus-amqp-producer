@@ -15,14 +15,14 @@ namespace ProophTest\ServiceBus\Message\HumusAmqp\Container;
 use Humus\Amqp\Producer;
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
-use Prooph\ServiceBus\Message\HumusAmqp\Container\PublishTransactionalPluginFactory;
-use Prooph\ServiceBus\Message\HumusAmqp\PublishTransactionalPlugin;
+use Prooph\ServiceBus\Message\HumusAmqp\Container\PublishConfirmSelectPluginFactory;
+use Prooph\ServiceBus\Message\HumusAmqp\PublishConfirmSelectPlugin;
 
 /**
- * Class PublishTransactionalPluginFactoryTest
+ * Class PublishConfirmSelectPluginFactoryTest
  * @package ProophTest\ServiceBus\Message\HumusAmqp\Container
  */
-class PublishTransactionalPluginFactoryTest extends TestCase
+class PublishConfirmSelectPluginFactoryTest extends TestCase
 {
     /**
      * @test
@@ -34,10 +34,10 @@ class PublishTransactionalPluginFactoryTest extends TestCase
         $container = $this->prophesize(ContainerInterface::class);
         $container->get('producer_name')->willReturn($producer->reveal());
 
-        $factory = new PublishTransactionalPluginFactory('producer_name');
+        $factory = new PublishConfirmSelectPluginFactory('producer_name');
         $plugin = $factory($container->reveal());
 
-        $this->assertInstanceOf(PublishTransactionalPlugin::class, $plugin);
+        $this->assertInstanceOf(PublishConfirmSelectPlugin::class, $plugin);
     }
 
     /**
@@ -52,9 +52,9 @@ class PublishTransactionalPluginFactoryTest extends TestCase
 
         $producerName = 'producer_name';
 
-        $plugin = PublishTransactionalPluginFactory::$producerName($container->reveal());
+        $plugin = PublishConfirmSelectPluginFactory::$producerName($container->reveal());
 
-        $this->assertInstanceOf(PublishTransactionalPlugin::class, $plugin);
+        $this->assertInstanceOf(PublishConfirmSelectPlugin::class, $plugin);
     }
 
     /**
@@ -66,6 +66,6 @@ class PublishTransactionalPluginFactoryTest extends TestCase
 
         $producerName = 'producer_name';
 
-        PublishTransactionalPluginFactory::$producerName('invalid');
+        PublishConfirmSelectPluginFactory::$producerName('invalid');
     }
 }
