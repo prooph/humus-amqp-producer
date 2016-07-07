@@ -32,7 +32,7 @@ class PublishConfirmSelectPluginFactoryTest extends TestCase
         $producer = $this->prophesize(Producer::class);
 
         $container = $this->prophesize(ContainerInterface::class);
-        $container->get('producer_name')->willReturn($producer->reveal());
+        $container->get('producer_name')->willReturn($producer->reveal())->shouldBeCalled();
 
         $factory = new PublishConfirmSelectPluginFactory('producer_name');
         $plugin = $factory($container->reveal());
@@ -48,7 +48,7 @@ class PublishConfirmSelectPluginFactoryTest extends TestCase
         $producer = $this->prophesize(Producer::class);
 
         $container = $this->prophesize(ContainerInterface::class);
-        $container->get('producer_name')->willReturn($producer->reveal());
+        $container->get('producer_name')->willReturn($producer->reveal())->shouldBeCalled();
 
         $producerName = 'producer_name';
 

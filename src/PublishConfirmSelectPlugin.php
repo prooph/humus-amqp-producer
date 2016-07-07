@@ -57,7 +57,11 @@ final class PublishConfirmSelectPlugin implements Plugin
      */
     public function onEventStoreCommitPostConfirmSelect(ActionEvent $actionEvent)
     {
-        $recordedEvents = $actionEvent->getParam('recordedEvents', []);
+        $recordedEvents = $actionEvent->getParam('recordedEvents', new \ArrayIterator());
+
+        if (! $recordedEvents instanceof \Countable) {
+            $recordedEvents = iterator_to_array($recordedEvents);
+        }
 
         $countRecordedEvents = count($recordedEvents);
 
