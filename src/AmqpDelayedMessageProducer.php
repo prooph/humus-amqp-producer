@@ -17,6 +17,7 @@ use Humus\Amqp\Producer;
 use Prooph\Common\Messaging\Message;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\Common\Messaging\MessageDataAssertion;
+use Prooph\ServiceBus\Async\MessageProducer;
 use Prooph\ServiceBus\Exception\RuntimeException;
 use React\Promise\Deferred;
 
@@ -24,7 +25,7 @@ use React\Promise\Deferred;
  * Class AmqpDelayedMessageProducer
  * @package Prooph\ServiceBus\Message\HumusAmqp
  */
-final class AmqpDelayedMessageProducer
+final class AmqpDelayedMessageProducer implements MessageProducer
 {
     /**
      * @var Producer
