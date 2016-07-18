@@ -82,11 +82,8 @@ final class TransactionalEventPublisher implements Plugin
                     $this->producer->startTransaction();
                 }
 
-                $countRecordedEvents = 0;
-
                 foreach ($recordedEvents as $recordedEvent) {
                     $this->eventBus->dispatch($recordedEvent);
-                    $countRecordedEvents++;
                 }
 
                 if ($fallback !== $recordedEvents) {
