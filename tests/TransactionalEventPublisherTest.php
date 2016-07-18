@@ -24,10 +24,10 @@ use Prooph\ServiceBus\Plugin\Router\EventRouter;
 use Prophecy\Argument;
 
 /**
- * Class PublishTransactionalPluginTest
+ * Class TransactionalEventPublisherTest
  * @package ProophTest\ServiceBus\Message\HumusAmqp
  */
-class PublishTransactionalPluginTest extends TestCase
+class TransactionalEventPublisherTest extends TestCase
 {
     /**
      * @test
