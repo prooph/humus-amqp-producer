@@ -89,7 +89,7 @@ class TransactionalEventPublisherTest extends TestCase
         $eventBusCalls = [];
 
         $eventRouter = new EventRouter();
-        $eventRouter->route('foo')->to(function($event) use ($plugin, &$eventBusCalls) {
+        $eventRouter->route('foo')->to(function ($event) use ($plugin, &$eventBusCalls) {
             $eventBusCalls[] = $event;
             $actionEvent = new DefaultActionEvent($event, null, [
                 'recordedEvents' => new \ArrayIterator(['baz', 'bam', 'bat'])
@@ -97,10 +97,10 @@ class TransactionalEventPublisherTest extends TestCase
             $plugin->onEventStoreCommitPost($actionEvent);
         });
 
-        $eventRouter->route('bar')->to(function($event) use (&$eventBusCalls) { $eventBusCalls[] = $event; });
-        $eventRouter->route('baz')->to(function($event) use (&$eventBusCalls) { $eventBusCalls[] = $event; });
-        $eventRouter->route('bam')->to(function($event) use (&$eventBusCalls) { $eventBusCalls[] = $event; });
-        $eventRouter->route('bat')->to(function($event) use (&$eventBusCalls) { $eventBusCalls[] = $event; });
+        $eventRouter->route('bar')->to(function ($event) use (&$eventBusCalls) { $eventBusCalls[] = $event; });
+        $eventRouter->route('baz')->to(function ($event) use (&$eventBusCalls) { $eventBusCalls[] = $event; });
+        $eventRouter->route('bam')->to(function ($event) use (&$eventBusCalls) { $eventBusCalls[] = $event; });
+        $eventRouter->route('bat')->to(function ($event) use (&$eventBusCalls) { $eventBusCalls[] = $event; });
 
         $eventBus->utilize($eventRouter);
 
