@@ -50,19 +50,19 @@ final class TransactionalEventPublisherFactory implements
      * ];
      * </code>
      *
-     * @param string $producerName
+     * @param string $eventPublisherName
      * @param array $arguments
      * @return TransactionalEventPublisher
      * @throws Exception\InvalidArgumentException
      */
-    public static function __callStatic(string $producerName, array $arguments) : TransactionalEventPublisher
+    public static function __callStatic(string $eventPublisherName, array $arguments) : TransactionalEventPublisher
     {
         if (!isset($arguments[0]) || !$arguments[0] instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(
                 sprintf('The first argument must be of type %s', ContainerInterface::class)
             );
         }
-        return (new static($producerName))->__invoke($arguments[0]);
+        return (new static($eventPublisherName))->__invoke($arguments[0]);
     }
 
     /**
