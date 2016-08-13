@@ -22,7 +22,7 @@
         "DDD",
         "humus",
         "amqp",
-        "RabbitMq"
+        "RabbitMQ"
     ],
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -30,12 +30,12 @@
         "php": "~7.0",
         "beberlei/assert": "~2.5",
         "prooph/common" : "~3.7",
-        "prolic/humus-amqp": ">=1.0-dev",
+        "prolic/humus-amqp": "^1.0",
         "prooph/service-bus" : "^5.1"
     },
     "require-dev": {
         "container-interop/container-interop": "^1.1",
-        "friendsofphp/php-cs-fixer": "^1.11.5",
+        "friendsofphp/php-cs-fixer": "^1.11.6",
         "phpunit/phpunit": "^5.4",
         "phpspec/prophecy": "^1.6",
         "prooph/event-store" : "^6.3",
