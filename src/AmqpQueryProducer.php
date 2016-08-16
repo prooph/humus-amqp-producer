@@ -12,9 +12,9 @@ declare (strict_types=1);
 
 namespace Prooph\ServiceBus\Message\HumusAmqp;
 
+use Humus\Amqp\JsonRpc\Error;
 use Humus\Amqp\JsonRpc\JsonRpcClient;
 use Humus\Amqp\JsonRpc\JsonRpcRequest;
-use Humus\Amqp\Producer;
 use Prooph\Common\Messaging\Message;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\Common\Messaging\MessageDataAssertion;
@@ -57,9 +57,16 @@ final class AmqpQueryProducer implements MessageProducer
     }
 
     /**
+     * Resolves the deferred for a given message.
+     * If an error occurs, the deferred is rejected and a reason will be given.
+     *
+     * If a message is parallel message (instance of \Prooph\ServiceBus\Message\HumusAmqp\ParallelMessage)
+     * and instance of \Humus\Amqp\JsonRpc\JsonRpcResponseCollection, which can be queried for given
+     * message ids.
+     *
      * @param Message $message
      * @param Deferred|null $deferred
-     * @throws RuntimeException If a $deferred is passed but producer can not handle it
+     * @throws RuntimeException If a $deferred is not passed
      * @return void
      */
     public function __invoke(Message $message, Deferred $deferred = null)
@@ -85,15 +92,27 @@ final class AmqpQueryProducer implements MessageProducer
         } else {
             $data = $this->arrayFromMessage($message);
 
+            $messageId = $message->uuid()->toString();
+
             $this->client->addRequest(new JsonRpcRequest(
                 'server',
                 $message->messageName(),
                 $data,
-                $message->uuid()->toString(),
+                $messageId,
                 $message->messageName(),
                 0,
                 $message->createdAt()->getTimestamp()
             ));
+
+            $results = $this->client->getResponseCollection($this->timeout);
+
+            if ($results instanceof Error) {
+                $deferred->reject($results->message());
+            }
+
+            $response = $results->getResponse($messageId);
+
+            $deferred->resolve($response->result());
         }
 
         $deferred->resolve($this->client->getResponseCollection($this->timeout));
