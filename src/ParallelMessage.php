@@ -15,10 +15,11 @@ namespace Prooph\ServiceBus\Message\HumusAmqp;
 use Prooph\Common\Messaging\Message;
 
 /**
- * Interface to represent delayed messages (aka messages that are processed in the future instead of now)
- * Usually you would implement these for commands that should be executed at a later time
+ * Interface to represent parallel messages (messages, executed at the same time, thus in parallel).
+ * Usually you would implement these if you need to have mulitple large query results,
+ * so that calling them parallel improves overall performance
  *
- * Interface DelayedMessage
+ * Interface ParallelMessage
  * @package Prooph\ServiceBus\Message\HumusAmqp
  */
 interface ParallelMessage extends Message

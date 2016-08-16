@@ -12,7 +12,6 @@ declare (strict_types=1);
 
 namespace Prooph\ServiceBus\Message\HumusAmqp;
 
-use Humus\Amqp\Constants;
 use Humus\Amqp\JsonRpc\JsonRpcClient;
 use Humus\Amqp\JsonRpc\JsonRpcRequest;
 use Humus\Amqp\Producer;
