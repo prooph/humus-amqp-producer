@@ -16,7 +16,7 @@ use Prooph\Common\Messaging\Message;
 
 /**
  * Interface to represent parallel messages (messages, executed at the same time, thus in parallel).
- * Usually you would implement these if you need to have mulitple large query results,
+ * Usually you would implement these if you need to have multiple large query results,
  * so that calling them parallel improves overall performance
  *
  * Interface ParallelMessage
