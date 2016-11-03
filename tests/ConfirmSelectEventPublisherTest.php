@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-declare (strict_types=1);
+declare(strict_types=1);
 
 namespace ProophTest\ServiceBus\Message\HumusAmqp;
 
@@ -99,10 +99,18 @@ class ConfirmSelectEventPublisherTest extends TestCase
             $plugin->onEventStoreCommitPost($actionEvent);
         });
 
-        $eventRouter->route('bar')->to(function ($event) use (&$eventBusCalls) { $eventBusCalls[] = $event; });
-        $eventRouter->route('baz')->to(function ($event) use (&$eventBusCalls) { $eventBusCalls[] = $event; });
-        $eventRouter->route('bam')->to(function ($event) use (&$eventBusCalls) { $eventBusCalls[] = $event; });
-        $eventRouter->route('bat')->to(function ($event) use (&$eventBusCalls) { $eventBusCalls[] = $event; });
+        $eventRouter->route('bar')->to(function ($event) use (&$eventBusCalls) {
+            $eventBusCalls[] = $event;
+        });
+        $eventRouter->route('baz')->to(function ($event) use (&$eventBusCalls) {
+            $eventBusCalls[] = $event;
+        });
+        $eventRouter->route('bam')->to(function ($event) use (&$eventBusCalls) {
+            $eventBusCalls[] = $event;
+        });
+        $eventRouter->route('bat')->to(function ($event) use (&$eventBusCalls) {
+            $eventBusCalls[] = $event;
+        });
 
         $eventBus->utilize($eventRouter);
 

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-declare (strict_types=1);
+declare(strict_types=1);
 
 namespace ProophTest\ServiceBus\Message\HumusAmqp;
 
@@ -69,9 +69,7 @@ class DelayedCommandTest extends TestCase
      */
     private function delayedComamnd()
     {
-        return new class extends DelayedCommand
-        {
-
+        return new class extends DelayedCommand {
             protected $messageName = 'test-delayed-command';
 
             protected $payload;
