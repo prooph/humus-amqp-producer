@@ -1,7 +1,11 @@
 {
   "title": "Prooph ServiceBus HumusAmqp Producer",
   "content": [
-    {"intro": "../README.md"}
+    {"intro": "../README.md"},
+    {"command_consumer": "command_consumer.md"},
+    {"event_consumer": "event_consumer.md"},
+    {"message_producer": "message_producer.md"},
+    {"event_publishers": "event_publishers.md"}
   ],
   "target": "./html",
   "template": "../vendor/tobiju/bookdown-bootswatch-templates/templates/main.php"

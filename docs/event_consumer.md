@@ -1,14 +1,13 @@
-# Command Consumer
+# Event Consumer
 
-A command consumer is a worker that waits for incoming commands via AMQP. When a new command arrives, it will be
-dispatched to the command bus to be handled.
+An event consumer is a worker that waits for incoming events via AMQP. When a new event arrives, it will be
+dispatched to the event bus to be handled.
 
-The simplest way to explain how to configure a command consumer, is to show by example.
+The simplest way to explain how to configure a event consumer, is to show by example.
 We will not cover the details of the HumusAmqp configuration, look at the
 [HumusAmqp Docs](https://humusamqp.readthedocs.io/en/latest/) instead.
 
-In the following section a command consumer and delayed command consumer is configured, we cover the details
-afterwards.
+In the following section a event consumer is configured, we cover the details afterwards.
 
 ```php
 return [
@@ -29,30 +28,22 @@ return [
             ],
             'driver' => 'amqp-extension',
             'exchange' => [
-                'command_bus_exchange' => [
-                    'name' => 'command_bus_exchange',
+                'event_bus_error_exchange' => [
+                    'name' => 'event_bus_error_exchange',
                     'type' => 'topic',
                     'connection' => 'default-amqp-connection',
                 ],
-                'command_bus_error_exchange' => [
-                    'name' => 'command_bus_error_exchange',
+                'event_bus_exchange' => [
+                    'name' => 'event_bus_exchange',
                     'type' => 'topic',
-                    'connection' => 'default-amqp-connection',
-                ],
-                'delayed_command_bus_exchange' => [
-                    'name' => 'delayed_command_bus_exchange',
-                    'type' => 'x-delayed-message',
-                    'arguments' => [
-                        'x-delayed-type' => 'topic'
-                    ],
                     'connection' => 'default-amqp-connection',
                 ],
             ],
             'queue' => [
-                'command_bus_error_queue' => [
-                    'name' => 'command_bus_error_queue',
+                'event_bus_error_queue' => [
+                    'name' => 'event_bus_error_queue',
                     'exchanges' => [
-                        'command_bus_error_exchange' => [
+                        'event_bus_error_exchange' => [
                             [
                                 'routing_keys' => [
                                     '#'
@@ -62,17 +53,10 @@ return [
                     ],
                     'connection' => 'default-amqp-connection',
                 ],
-                'command_bus_queue' => [
-                    'name' => 'command_bus_queue',
+                'event_bus_queue' => [
+                    'name' => 'event_bus_queue',
                     'exchanges' => [
-                        'command_bus_exchange' => [
-                            [
-                                'routing_keys' => [
-                                    '#'
-                                ],
-                            ],
-                        ],
-                        'delayed_command_bus_exchange' => [
+                        'event_bus_exchange' => [
                             [
                                 'routing_keys' => [
                                     '#'
@@ -81,63 +65,69 @@ return [
                         ],
                     ],
                     'arguments' => [
-                        'x-dead-letter-exchange' => 'command_bus_error_exchange',
+                        'x-dead-letter-exchange' => 'event_bus_error_exchange',
                     ],
                     'connection' => 'default-amqp-connection',
                 ],
             ],
-            'callback_consumer' => [
-                'command_consumer' => [
-                    'queue' => 'command_bus_queue',
-                    'delivery_callback' => 'command_consumer_callback',
-                    'idle_timeout' => 3,
-                    'qos'          => [
-                        'prefetch_count' => 2
-                    ],
-                    'logger' => 'command_consumer_logger',
+            'event_consumer' => [
+                'queue' => 'event_bus_queue',
+                'delivery_callback' => 'event_consumer_callback',
+                'idle_timeout' => 3,
+                'qos'          => [
+                    'prefetch_count' => 2
                 ],
+                'logger' => 'event_consumer_logger',
             ],
         ],
     ],
     'prooph' => [
         'humus-amqp-producer' => [
-            'command_consumer_callback' => [
-                'command_consumer_callback' => [
-                    'command_bus' => 'amqp_command_bus',
-                    'message_factory' => \Prooph\Common\Messaging\FQCNMessageFactory::class,
+            'event_consumer_callback' => [
+                'event_consumer_callback' => [
+                    'event_bus' => 'amqp_event_bus',
+                    'message_factory' => App\Event\EventFactory::class,
                 ],
             ],
         ],
         'service_bus' => [
-            'amqp_command_bus' => [
-                // amqp command bus settings
+            'amqp_event_bus' => [
+                // amqp event bus settings
             ],
-            'command_bus' => [
-                // command bus settings, all or at least some commands are send to the amqp_command_bus  
+            'event_bus' => [
+                // event bus settings, all or at least some events are send to the amqp_event_bus  
             ],
         ],
     ],
     'dependencies' => [
         'factories' => [
-            'command_consumer_callback' => [\Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpCommandConsumerCallbackFactory::class, 'command_consumer_callback'],
+            'default-amqp-connection' => [
+                \Humus\Amqp\Container\ConnectionFactory::class,
+                'default-amqp-connection'
+            ],
+            'event_consumer' => [
+                \Humus\Amqp\Container\CallbackConsumerFactory::class,
+                'event_consumer'
+            ],
+            'event_consumer_callback' => [
+                \Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpEventConsumerCallbackFactory::class,
+                'event_consumer_callback'
+            ],
         ],
     ],
 ];
 ```
 
 What do we see here? In the `humus` section, a connection, used driver, some exchanges and queues and the
-callback consumer are defined and configured. In the `dependencies` section the used `command_consumer_callback`
+callback consumer are defined and configured. In the `dependencies` section the used `event_consumer_callback`
 is registered in the container via the provided factory. The important section for this library, is the section
-`prooph` - `humus-amqp-producer`: what we have here is a command consumer callback, that is passed the
-used message factory as well as the used command bus to handle the incoming commands.
-Whenever an error occurs, the command will be routed to the command_bus_error_queue, according to the settings
+`prooph` - `humus-amqp-producer`: what we have here is a event consumer callback, that is passed the
+used message factory as well as the used event bus to handle the incoming events.
+Whenever an error occurs, the event will be routed to the event_bus_error_queue, according to the settings
 in the `humus` section.
 
-You can then start the command consumer with
+You can then start the event consumer with
 
 ```
-$ ./vendor/bin/humus-amqp consumer -c command_consumer
+$ ./vendor/bin/humus-amqp consumer -c event_consumer
 ```
-
-This command consumer is configured to also handle delayed commands (commands that are executed at a later
-point in time).

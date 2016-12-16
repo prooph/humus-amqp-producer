@@ -8,11 +8,25 @@ Use [HumusAmqp](https://github.com/prolic/HumusAmqp) as message producer for [Pr
 
 ## Installation
 
-You can install prooph/humus-amqp-producer via composer by adding `"prooph/humus-amqp-producer": "dev-master"` as requirement to your composer.json.
+You can install prooph/humus-amqp-producer via composer by adding `"prooph/humus-amqp-producer": "^1.0"` as requirement to your composer.json.
+
+## Documentation
+
+Documentation is [in the docs tree](docs/), and can be compiled using [bookdown](http://bookdown.io).
+
+```console
+$ php ./vendor/bin/bookdown docs/bookdown.json
+$ php -S 0.0.0.0:8080 -t docs/html/
+```
+
+Then browse to [http://localhost:8080/](http://localhost:8080/)
+
+Note: HumusAmqp is not covered in the documentation. If you're new to AMQP and/ or RabbitMQ and you don't know
+how to configure HumusAmqp, take a look at the [HumusAmqp Docs](https://humusamqp.readthedocs.io/en/latest/) first.
 
 ## Support
 
-- Ask questions on [prooph-users](https://groups.google.com/forum/?hl=de#!forum/prooph) mailing list.
+- Ask questions on [prooph-users](https://groups.google.com/forum/?hl=de#!forum/prooph) google group.
 - File issues at [https://github.com/prooph/humus-amqp-producer/issues](https://github.com/prooph/humus-amqp-producer/issues).
 - Say hello in the [prooph gitter](https://gitter.im/prooph/improoph) chat.
 
