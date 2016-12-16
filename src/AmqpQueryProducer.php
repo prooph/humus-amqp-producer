@@ -22,10 +22,6 @@ use Prooph\ServiceBus\Async\MessageProducer;
 use Prooph\ServiceBus\Exception\RuntimeException;
 use React\Promise\Deferred;
 
-/**
- * Class AmqpQueryProducer
- * @package Prooph\ServiceBus\Message\HumusAmqp
- */
 final class AmqpQueryProducer implements MessageProducer
 {
     /**
@@ -43,12 +39,6 @@ final class AmqpQueryProducer implements MessageProducer
      */
     private $timeout;
 
-    /**
-     * AmqpQueryProducer constructor.
-     * @param JsonRpcClient $client
-     * @param MessageConverter $messageConverter
-     * @param float $timeout in seconds
-     */
     public function __construct(JsonRpcClient $client, MessageConverter $messageConverter, float $timeout = 0.0)
     {
         $this->client = $client;
@@ -64,8 +54,6 @@ final class AmqpQueryProducer implements MessageProducer
      * and instance of \Humus\Amqp\JsonRpc\JsonRpcResponseCollection, which can be queried for given
      * message ids.
      *
-     * @param Message $message
-     * @param Deferred|null $deferred
      * @throws RuntimeException If a $deferred is not passed
      * @return void
      */
@@ -118,11 +106,7 @@ final class AmqpQueryProducer implements MessageProducer
         $deferred->resolve($this->client->getResponseCollection($this->timeout));
     }
 
-    /**
-     * @param Message $message
-     * @return array
-     */
-    private function arrayFromMessage(Message $message) : array
+    private function arrayFromMessage(Message $message): array
     {
         $messageData = $this->messageConverter->convertToArray($message);
 

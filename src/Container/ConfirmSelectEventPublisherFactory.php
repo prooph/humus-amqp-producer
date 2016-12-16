@@ -21,10 +21,6 @@ use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Exception;
 use Prooph\ServiceBus\Message\HumusAmqp\ConfirmSelectEventPublisher;
 
-/**
- * Class ConfirmSelectEventPublisherFactory
- * @package Prooph\ServiceBus\Message\HumusAmqp\Container
- */
 final class ConfirmSelectEventPublisherFactory implements
     ProvidesDefaultOptions,
     RequiresConfigId,
@@ -50,12 +46,9 @@ final class ConfirmSelectEventPublisherFactory implements
      * ];
      * </code>
      *
-     * @param string $eventPublisherName
-     * @param array $arguments
-     * @return ConfirmSelectEventPublisher
      * @throws Exception\InvalidArgumentException
      */
-    public static function __callStatic(string $eventPublisherName, array $arguments) : ConfirmSelectEventPublisher
+    public static function __callStatic(string $eventPublisherName, array $arguments): ConfirmSelectEventPublisher
     {
         if (!isset($arguments[0]) || !$arguments[0] instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(
@@ -65,20 +58,12 @@ final class ConfirmSelectEventPublisherFactory implements
         return (new static($eventPublisherName))->__invoke($arguments[0]);
     }
 
-    /**
-     * ConfirmSelectEventPublisherFactory constructor.
-     * @param string $eventPublisherName
-     */
     public function __construct(string $eventPublisherName)
     {
         $this->eventPublisherName = $eventPublisherName;
     }
 
-    /**
-     * @param ContainerInterface $container
-     * @return ConfirmSelectEventPublisher
-     */
-    public function __invoke(ContainerInterface $container) : ConfirmSelectEventPublisher
+    public function __invoke(ContainerInterface $container): ConfirmSelectEventPublisher
     {
         $options = $this->options($container->get('config'), $this->eventPublisherName);
 
@@ -88,18 +73,12 @@ final class ConfirmSelectEventPublisherFactory implements
         return new ConfirmSelectEventPublisher($eventBus, $producer, $options['timeout']);
     }
 
-    /**
-     * @return array
-     */
-    public function dimensions()
+    public function dimensions(): array
     {
         return ['prooph', 'humus-amqp-producer', 'confirm_select_event_publisher'];
     }
 
-    /**
-     * @return array
-     */
-    public function defaultOptions()
+    public function defaultOptions(): array
     {
         return [
             'event_bus' => EventBus::class,
@@ -107,10 +86,7 @@ final class ConfirmSelectEventPublisherFactory implements
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function mandatoryOptions()
+    public function mandatoryOptions(): array
     {
         return [
             'producer'

@@ -21,10 +21,6 @@ use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Exception;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpEventConsumerCallback;
 
-/**
- * Class AmqpEventConsumerCallbackFactory
- * @package Prooph\ServiceBus\Message\HumusAmqp\Container
- */
 final class AmqpEventConsumerCallbackFactory implements ProvidesDefaultOptions, RequiresConfigId
 {
     use ConfigurationTrait;
@@ -47,12 +43,9 @@ final class AmqpEventConsumerCallbackFactory implements ProvidesDefaultOptions, 
      * ];
      * </code>
      *
-     * @param string $amqpEventConsumerCallbackName
-     * @param array $arguments
-     * @return AmqpEventConsumerCallback
      * @throws Exception\InvalidArgumentException
      */
-    public static function __callStatic(string $amqpEventConsumerCallbackName, array $arguments) : AmqpEventConsumerCallback
+    public static function __callStatic(string $amqpEventConsumerCallbackName, array $arguments): AmqpEventConsumerCallback
     {
         if (!isset($arguments[0]) || !$arguments[0] instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(
@@ -62,20 +55,12 @@ final class AmqpEventConsumerCallbackFactory implements ProvidesDefaultOptions, 
         return (new static($amqpEventConsumerCallbackName))->__invoke($arguments[0]);
     }
 
-    /**
-     * AmqpEventConsumerCallbackFactory constructor.
-     * @param string $amqpEventConsumerCallbackName
-     */
     public function __construct(string $amqpEventConsumerCallbackName)
     {
         $this->amqpEventConsumerCallbackName = $amqpEventConsumerCallbackName;
     }
 
-    /**
-     * @param ContainerInterface $container
-     * @return AmqpEventConsumerCallback
-     */
-    public function __invoke(ContainerInterface $container) : AmqpEventConsumerCallback
+    public function __invoke(ContainerInterface $container): AmqpEventConsumerCallback
     {
         $options = $this->options($container->get('config'), $this->amqpEventConsumerCallbackName);
 
@@ -85,18 +70,12 @@ final class AmqpEventConsumerCallbackFactory implements ProvidesDefaultOptions, 
         );
     }
 
-    /**
-     * @return array
-     */
-    public function dimensions()
+    public function dimensions(): array
     {
         return ['prooph', 'humus-amqp-producer', 'event_consumer_callback'];
     }
 
-    /**
-     * @return array
-     */
-    public function defaultOptions()
+    public function defaultOptions(): array
     {
         return [
             'event_bus' => EventBus::class,

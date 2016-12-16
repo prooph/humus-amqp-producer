@@ -21,10 +21,6 @@ use Prooph\Common\Messaging\NoOpMessageConverter;
 use Prooph\ServiceBus\Exception;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpDelayedMessageProducer;
 
-/**
- * Class AmqpDelayedMessageProducerFactory
- * @package Prooph\ServiceBus\Message\HumusAmqp\Container
- */
 final class AmqpDelayedMessageProducerFactory implements ProvidesDefaultOptions, RequiresConfigId, RequiresMandatoryOptions
 {
     use ConfigurationTrait;
@@ -47,12 +43,9 @@ final class AmqpDelayedMessageProducerFactory implements ProvidesDefaultOptions,
      * ];
      * </code>
      *
-     * @param string $amqpDelayedMessageProducerName
-     * @param array $arguments
-     * @return AmqpDelayedMessageProducer
      * @throws Exception\InvalidArgumentException
      */
-    public static function __callStatic(string $amqpDelayedMessageProducerName, array $arguments) : AmqpDelayedMessageProducer
+    public static function __callStatic(string $amqpDelayedMessageProducerName, array $arguments): AmqpDelayedMessageProducer
     {
         if (!isset($arguments[0]) || !$arguments[0] instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(
@@ -62,20 +55,12 @@ final class AmqpDelayedMessageProducerFactory implements ProvidesDefaultOptions,
         return (new static($amqpDelayedMessageProducerName))->__invoke($arguments[0]);
     }
 
-    /**
-     * AmqpCommandConsumerCallbackFactory constructor.
-     * @param string $amqpDelayedMessageProducerName
-     */
     public function __construct(string $amqpDelayedMessageProducerName)
     {
         $this->amqpDelayedMessageProducerName = $amqpDelayedMessageProducerName;
     }
 
-    /**
-     * @param ContainerInterface $container
-     * @return AmqpDelayedMessageProducer
-     */
-    public function __invoke(ContainerInterface $container) : AmqpDelayedMessageProducer
+    public function __invoke(ContainerInterface $container): AmqpDelayedMessageProducer
     {
         $options = $this->options($container->get('config'), $this->amqpDelayedMessageProducerName);
 
@@ -86,18 +71,12 @@ final class AmqpDelayedMessageProducerFactory implements ProvidesDefaultOptions,
         );
     }
 
-    /**
-     * @return array
-     */
-    public function dimensions()
+    public function dimensions(): array
     {
         return ['prooph', 'humus-amqp-producer', 'delayed_message_producer'];
     }
 
-    /**
-     * @return array
-     */
-    public function defaultOptions()
+    public function defaultOptions(): array
     {
         return [
             'message_converter' => NoOpMessageConverter::class,
@@ -105,10 +84,7 @@ final class AmqpDelayedMessageProducerFactory implements ProvidesDefaultOptions,
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function mandatoryOptions()
+    public function mandatoryOptions(): array
     {
         return [
             'producer',

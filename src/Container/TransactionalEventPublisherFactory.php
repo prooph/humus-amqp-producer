@@ -21,10 +21,6 @@ use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Exception;
 use Prooph\ServiceBus\Message\HumusAmqp\TransactionalEventPublisher;
 
-/**
- * Class TransactionalEventPublisherFactory
- * @package Prooph\ServiceBus\Message\HumusAmqp\Container
- */
 final class TransactionalEventPublisherFactory implements
     ProvidesDefaultOptions,
     RequiresConfigId,
@@ -50,12 +46,9 @@ final class TransactionalEventPublisherFactory implements
      * ];
      * </code>
      *
-     * @param string $eventPublisherName
-     * @param array $arguments
-     * @return TransactionalEventPublisher
      * @throws Exception\InvalidArgumentException
      */
-    public static function __callStatic(string $eventPublisherName, array $arguments) : TransactionalEventPublisher
+    public static function __callStatic(string $eventPublisherName, array $arguments): TransactionalEventPublisher
     {
         if (!isset($arguments[0]) || !$arguments[0] instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(
@@ -65,20 +58,12 @@ final class TransactionalEventPublisherFactory implements
         return (new static($eventPublisherName))->__invoke($arguments[0]);
     }
 
-    /**
-     * TransactionalEventPublisherFactory constructor.
-     * @param string $eventPublisherName
-     */
     public function __construct(string $eventPublisherName)
     {
         $this->eventPublisherName = $eventPublisherName;
     }
 
-    /**
-     * @param ContainerInterface $container
-     * @return TransactionalEventPublisher
-     */
-    public function __invoke(ContainerInterface $container) : TransactionalEventPublisher
+    public function __invoke(ContainerInterface $container): TransactionalEventPublisher
     {
         $options = $this->options($container->get('config'), $this->eventPublisherName);
 
@@ -88,28 +73,19 @@ final class TransactionalEventPublisherFactory implements
         return new TransactionalEventPublisher($eventBus, $producer);
     }
 
-    /**
-     * @return array
-     */
-    public function dimensions()
+    public function dimensions(): array
     {
         return ['prooph', 'humus-amqp-producer', 'transactional_event_publisher'];
     }
 
-    /**
-     * @return array
-     */
-    public function defaultOptions()
+    public function defaultOptions(): array
     {
         return [
             'event_bus' => EventBus::class,
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function mandatoryOptions()
+    public function mandatoryOptions(): array
     {
         return [
             'producer'

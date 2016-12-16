@@ -18,14 +18,11 @@ use Prooph\Common\Messaging\Message;
  * Interface to represent parallel messages (messages, executed at the same time, thus in parallel).
  * Usually you would implement these if you need to have multiple large query results,
  * so that calling them parallel improves overall performance
- *
- * Interface ParallelMessage
- * @package Prooph\ServiceBus\Message\HumusAmqp
  */
 interface ParallelMessage extends Message
 {
     /**
      * @return Message[]
      */
-    public function messages();
+    public function messages(): array;
 }

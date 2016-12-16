@@ -21,10 +21,6 @@ use Prooph\Common\Messaging\NoOpMessageConverter;
 use Prooph\ServiceBus\Exception;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpMessageProducer;
 
-/**
- * Class AmqpMessageProducerFactory
- * @package Prooph\ServiceBus\Message\HumusAmqp\Container
- */
 final class AmqpMessageProducerFactory implements ProvidesDefaultOptions, RequiresConfigId, RequiresMandatoryOptions
 {
     use ConfigurationTrait;
@@ -47,12 +43,9 @@ final class AmqpMessageProducerFactory implements ProvidesDefaultOptions, Requir
      * ];
      * </code>
      *
-     * @param string $amqpMessageProducerName
-     * @param array $arguments
-     * @return AmqpMessageProducer
      * @throws Exception\InvalidArgumentException
      */
-    public static function __callStatic(string $amqpMessageProducerName, array $arguments) : AmqpMessageProducer
+    public static function __callStatic(string $amqpMessageProducerName, array $arguments): AmqpMessageProducer
     {
         if (!isset($arguments[0]) || !$arguments[0] instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(
@@ -62,20 +55,12 @@ final class AmqpMessageProducerFactory implements ProvidesDefaultOptions, Requir
         return (new static($amqpMessageProducerName))->__invoke($arguments[0]);
     }
 
-    /**
-     * AmqpCommandConsumerCallbackFactory constructor.
-     * @param string $amqpMessageProducerName
-     */
     public function __construct(string $amqpMessageProducerName)
     {
         $this->amqpMessageProducerName = $amqpMessageProducerName;
     }
 
-    /**
-     * @param ContainerInterface $container
-     * @return AmqpMessageProducer
-     */
-    public function __invoke(ContainerInterface $container) : AmqpMessageProducer
+    public function __invoke(ContainerInterface $container): AmqpMessageProducer
     {
         $options = $this->options($container->get('config'), $this->amqpMessageProducerName);
 
@@ -86,18 +71,12 @@ final class AmqpMessageProducerFactory implements ProvidesDefaultOptions, Requir
         );
     }
 
-    /**
-     * @return array
-     */
-    public function dimensions()
+    public function dimensions(): array
     {
         return ['prooph', 'humus-amqp-producer', 'message_producer'];
     }
 
-    /**
-     * @return array
-     */
-    public function defaultOptions()
+    public function defaultOptions(): array
     {
         return [
             'message_converter' => NoOpMessageConverter::class,
@@ -105,10 +84,7 @@ final class AmqpMessageProducerFactory implements ProvidesDefaultOptions, Requir
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function mandatoryOptions()
+    public function mandatoryOptions(): array
     {
         return [
             'producer',

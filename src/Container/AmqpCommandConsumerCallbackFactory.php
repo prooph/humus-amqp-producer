@@ -21,10 +21,6 @@ use Prooph\ServiceBus\CommandBus;
 use Prooph\ServiceBus\Exception;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpCommandConsumerCallback;
 
-/**
- * Class AmqpCommandConsumerCallbackFactory
- * @package Prooph\ServiceBus\Message\HumusAmqp\Container
- */
 final class AmqpCommandConsumerCallbackFactory implements ProvidesDefaultOptions, RequiresConfigId
 {
     use ConfigurationTrait;
@@ -47,12 +43,9 @@ final class AmqpCommandConsumerCallbackFactory implements ProvidesDefaultOptions
      * ];
      * </code>
      *
-     * @param string $amqpCommandConsumerCallbackName
-     * @param array $arguments
-     * @return AmqpCommandConsumerCallback
      * @throws Exception\InvalidArgumentException
      */
-    public static function __callStatic(string $amqpCommandConsumerCallbackName, array $arguments) : AmqpCommandConsumerCallback
+    public static function __callStatic(string $amqpCommandConsumerCallbackName, array $arguments): AmqpCommandConsumerCallback
     {
         if (!isset($arguments[0]) || !$arguments[0] instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(
@@ -62,20 +55,12 @@ final class AmqpCommandConsumerCallbackFactory implements ProvidesDefaultOptions
         return (new static($amqpCommandConsumerCallbackName))->__invoke($arguments[0]);
     }
 
-    /**
-     * AmqpCommandConsumerCallbackFactory constructor.
-     * @param string $amqpCommandConsumerCallbackName
-     */
     public function __construct(string $amqpCommandConsumerCallbackName)
     {
         $this->amqpCommandConsumerCallbackName = $amqpCommandConsumerCallbackName;
     }
 
-    /**
-     * @param ContainerInterface $container
-     * @return AmqpCommandConsumerCallback
-     */
-    public function __invoke(ContainerInterface $container) : AmqpCommandConsumerCallback
+    public function __invoke(ContainerInterface $container): AmqpCommandConsumerCallback
     {
         $options = $this->options($container->get('config'), $this->amqpCommandConsumerCallbackName);
 
@@ -85,18 +70,12 @@ final class AmqpCommandConsumerCallbackFactory implements ProvidesDefaultOptions
         );
     }
 
-    /**
-     * @return array
-     */
-    public function dimensions()
+    public function dimensions(): array
     {
         return ['prooph', 'humus-amqp-producer', 'command_consumer_callback'];
     }
 
-    /**
-     * @return array
-     */
-    public function defaultOptions()
+    public function defaultOptions(): array
     {
         return [
             'command_bus' => CommandBus::class,

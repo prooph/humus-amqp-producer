@@ -19,10 +19,6 @@ use Prooph\EventStore\Plugin\Plugin;
 use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Exception\RuntimeException;
 
-/**
- * Class ConfirmSelectEventPublisher
- * @package Prooph\ServiceBus\Message\HumusAmqp
- */
 final class ConfirmSelectEventPublisher implements Plugin
 {
     /**
@@ -50,12 +46,6 @@ final class ConfirmSelectEventPublisher implements Plugin
      */
     private $inConfirmSelectMode = false;
 
-    /**
-     * ConfirmSelectEventPublisher constructor.
-     * @param EventBus $eventBus
-     * @param Producer $producer
-     * @param float $timeout
-     */
     public function __construct(EventBus $eventBus, Producer $producer, float $timeout = 2.0)
     {
         $this->eventBus = $eventBus;
@@ -63,18 +53,11 @@ final class ConfirmSelectEventPublisher implements Plugin
         $this->timeout = $timeout;
     }
 
-    /**
-     * @param EventStore $eventStore
-     * @return void
-     */
     public function setUp(EventStore $eventStore)
     {
         $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'onEventStoreCommitPost']);
     }
 
-    /**
-     * @param ActionEvent $actionEvent
-     */
     public function onEventStoreCommitPost(ActionEvent $actionEvent)
     {
         $this->queuedActionEvents[] = $actionEvent;

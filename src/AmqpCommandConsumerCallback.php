@@ -21,10 +21,6 @@ use Prooph\Common\Messaging\MessageFactory;
 use Prooph\EventStore\Exception\ConcurrencyException;
 use Prooph\ServiceBus\CommandBus;
 
-/**
- * Class AmqpCommandConsumerCallback
- * @package Prooph\ServiceBus\Message\HumusAmqp
- */
 final class AmqpCommandConsumerCallback
 {
     /**
@@ -37,23 +33,13 @@ final class AmqpCommandConsumerCallback
      */
     private $messageFactory;
 
-    /**
-     * AmqpCommandConsumerCallback constructor.
-     * @param CommandBus $commandBus
-     * @param MessageFactory $messageFactory
-     */
     public function __construct(CommandBus $commandBus, MessageFactory $messageFactory)
     {
         $this->commandBus = $commandBus;
         $this->messageFactory = $messageFactory;
     }
 
-    /**
-     * @param Envelope $envelope
-     * @param Queue $queue
-     * @return DeliveryResult
-     */
-    public function __invoke(Envelope $envelope, Queue $queue) : DeliveryResult
+    public function __invoke(Envelope $envelope, Queue $queue): DeliveryResult
     {
         $data = json_decode($envelope->getBody(), true);
 

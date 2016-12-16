@@ -18,10 +18,6 @@ use Prooph\EventStore\EventStore;
 use Prooph\EventStore\Plugin\Plugin;
 use Prooph\ServiceBus\EventBus;
 
-/**
- * Class TransactionalEventPublisher
- * @package Prooph\ServiceBus\Message\HumusAmqp
- */
 final class TransactionalEventPublisher implements Plugin
 {
     /**
@@ -44,29 +40,17 @@ final class TransactionalEventPublisher implements Plugin
      */
     private $inTransaction = false;
 
-    /**
-     * TransactionalEventPublisher constructor.
-     * @param EventBus $eventBus
-     * @param Producer $producer
-     */
     public function __construct(EventBus $eventBus, Producer $producer)
     {
         $this->eventBus = $eventBus;
         $this->producer = $producer;
     }
 
-    /**
-     * @param EventStore $eventStore
-     * @return void
-     */
     public function setUp(EventStore $eventStore)
     {
         $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'onEventStoreCommitPost']);
     }
 
-    /**
-     * @param ActionEvent $actionEvent
-     */
     public function onEventStoreCommitPost(ActionEvent $actionEvent)
     {
         $this->queuedActionEvents[] = $actionEvent;

@@ -21,10 +21,6 @@ use Prooph\ServiceBus\Async\MessageProducer;
 use Prooph\ServiceBus\Exception\RuntimeException;
 use React\Promise\Deferred;
 
-/**
- * Class AmqpDelayedMessageProducer
- * @package Prooph\ServiceBus\Message\HumusAmqp
- */
 final class AmqpDelayedMessageProducer implements MessageProducer
 {
     /**
@@ -42,12 +38,6 @@ final class AmqpDelayedMessageProducer implements MessageProducer
      */
     private $appId;
 
-    /**
-     * AmqpDelayedMessageProducer constructor.
-     * @param Producer $producer
-     * @param MessageConverter $messageConverter
-     * @param string $appId
-     */
     public function __construct(Producer $producer, MessageConverter $messageConverter, string $appId = '')
     {
         $this->producer = $producer;
@@ -88,11 +78,7 @@ final class AmqpDelayedMessageProducer implements MessageProducer
         $this->producer->publish($data, $message->messageName(), Constants::AMQP_NOPARAM, $attributes);
     }
 
-    /**
-     * @param Message $message
-     * @return array
-     */
-    private function arrayFromMessage(Message $message) : array
+    private function arrayFromMessage(Message $message): array
     {
         $messageData = $this->messageConverter->convertToArray($message);
 
