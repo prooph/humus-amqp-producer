@@ -51,7 +51,7 @@ return [
             'delayed_message_producer' => [
                 'amqp_delayed_command_producer' => [
                     'producer'          => 'delayed_command_producer',
-                    'app_id'            => 'dimabay partner portal',
+                    'app_id'            => 'my app',
                     'message_converter' => \Prooph\Common\Messaging\NoOpMessageConverter::class,
                 ],
             ],
