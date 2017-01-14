@@ -1,8 +1,8 @@
 <?php
-/*
+/**
  * This file is part of the prooph/humus-amqp-producer.
- * (c) 2016 prooph software GmbH <contact@prooph.de>
- * (c) 2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2016-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2016-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,11 +20,7 @@ use Prooph\Common\Messaging\MessageConverter;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpMessageProducer;
 use React\Promise\Deferred;
 
-/**
- * Class AmqpMessageProducerTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp
- */
-class  AmqpMessageProducerTest extends TestCase
+class AmqpMessageProducerTest extends TestCase
 {
     /**
      * @test
@@ -48,7 +44,7 @@ class  AmqpMessageProducerTest extends TestCase
             [
                 'app_id' => 'test_app',
                 'timestamp' => $now->getTimestamp(),
-                'type' => 'test-message'
+                'type' => 'test-message',
             ]
         )->shouldBeCalled();
 

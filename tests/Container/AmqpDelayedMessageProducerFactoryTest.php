@@ -1,8 +1,8 @@
 <?php
-/*
- * This file is part of the prooph/humus-amqpDelayed-producer.
- * (c) 2016 prooph software GmbH <contact@prooph.de>
- * (c) 2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+/**
+ * This file is part of the prooph/humus-amqp-producer.
+ * (c) 2016-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2016-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,10 +19,6 @@ use Prooph\Common\Messaging\MessageConverter;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpDelayedMessageProducer;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpDelayedMessageProducerFactory;
 
-/**
- * Class AmqpDelayedMessageProducerFactoryTest
- * @package ProophTest\ServiceBus\Message\HumusAmqpDelayed\Container
- */
 class AmqpDelayedMessageProducerFactoryTest extends TestCase
 {
     /**
@@ -41,11 +37,11 @@ class AmqpDelayedMessageProducerFactoryTest extends TestCase
                         'test-delayed-message-producer' => [
                             'producer' => 'test-producer',
                             'message_converter' => 'test-message-converter',
-                            'app_id' => 'test-app'
-                        ]
-                    ]
-                ]
-            ]
+                            'app_id' => 'test-app',
+                        ],
+                    ],
+                ],
+            ],
         ])->shouldBeCalled();
         $container->get('test-producer')->willReturn($producer->reveal())->shouldBeCalled();
         $container->get('test-message-converter')->willReturn($messageConverter->reveal())->shouldBeCalled();

@@ -6,6 +6,11 @@ Use [HumusAmqp](https://github.com/prolic/HumusAmqp) as message producer for [Pr
 [![Coverage Status](https://coveralls.io/repos/prooph/humus-amqp-producer/badge.svg?branch=master&service=github)](https://coveralls.io/github/prooph/humus-amqp-producer?branch=master)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/prooph/improoph)
 
+## Differences betweeen v1 and v2
+
+v1 is compatible with [Prooph\ServiceBus](http://github.com/prooph/service-bus)` 5.0 while the newer v2
+supports 6.0 of `Prooph\ServiceBus`.
+
 ## Installation
 
 You can install prooph/humus-amqp-producer via composer by adding `"prooph/humus-amqp-producer": "^1.0"` as requirement to your composer.json.

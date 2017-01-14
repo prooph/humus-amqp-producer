@@ -1,8 +1,8 @@
 <?php
-/*
+/**
  * This file is part of the prooph/humus-amqp-producer.
- * (c) 2016 prooph software GmbH <contact@prooph.de>
- * (c) 2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2016-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2016-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,11 +14,12 @@ namespace Prooph\ServiceBus\Message\HumusAmqp;
 
 use Humus\Amqp\Producer;
 use Prooph\Common\Event\ActionEvent;
-use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Plugin\Plugin;
+use Prooph\EventStore\ActionEventEmitterEventStore;
+use Prooph\EventStore\Plugin\AbstractPlugin;
+use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use Prooph\ServiceBus\EventBus;
 
-final class TransactionalEventPublisher implements Plugin
+final class TransactionalEventPublisher extends AbstractPlugin
 {
     /**
      * @var EventBus
@@ -46,9 +47,43 @@ final class TransactionalEventPublisher implements Plugin
         $this->producer = $producer;
     }
 
-    public function setUp(EventStore $eventStore)
+    public function attachToEventStore(ActionEventEmitterEventStore $eventStore): void
     {
-        $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'onEventStoreCommitPost']);
+        $this->listenerHandlers[] = $eventStore->attach(
+            ActionEventEmitterEventStore::EVENT_APPEND_TO,
+            function (ActionEvent $event) use ($eventStore): void {
+                if (! $eventStore instanceof TransactionalActionEventEmitterEventStore) {
+                    $this->onEventStoreCommitPost($event);
+                } else {
+                    $this->queuedActionEvents[] = $event;
+                }
+            }
+        );
+        $this->listenerHandlers[] = $eventStore->attach(
+            ActionEventEmitterEventStore::EVENT_CREATE,
+            function (ActionEvent $event) use ($eventStore): void {
+                if (! $eventStore instanceof TransactionalActionEventEmitterEventStore) {
+                    $this->onEventStoreCommitPost($event);
+                } else {
+                    $this->queuedActionEvents[] = $event;
+                }
+            }
+        );
+        if ($eventStore instanceof TransactionalActionEventEmitterEventStore) {
+            $this->listenerHandlers[] = $eventStore->attach(
+                TransactionalActionEventEmitterEventStore::EVENT_COMMIT,
+                function (ActionEvent $event): void {
+                    $this->onEventStoreCommitPost($event);
+                    $this->queuedActionEvents = [];
+                }
+            );
+            $this->listenerHandlers[] = $eventStore->attach(
+                TransactionalActionEventEmitterEventStore::EVENT_ROLLBACK,
+                function (ActionEvent $event): void {
+                    $this->queuedActionEvents = [];
+                }
+            );
+        }
     }
 
     public function onEventStoreCommitPost(ActionEvent $actionEvent)
@@ -72,7 +107,7 @@ final class TransactionalEventPublisher implements Plugin
 
                 if ($fallback !== $recordedEvents) {
                     $this->producer->commitTransaction();
-                };
+                }
             }
 
             $this->inTransaction = false;

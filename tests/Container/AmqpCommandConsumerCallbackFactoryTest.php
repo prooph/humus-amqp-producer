@@ -1,8 +1,8 @@
 <?php
-/*
+/**
  * This file is part of the prooph/humus-amqp-producer.
- * (c) 2016 prooph software GmbH <contact@prooph.de>
- * (c) 2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2016-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2016-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,10 +19,6 @@ use Prooph\ServiceBus\CommandBus;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpCommandConsumerCallback;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpCommandConsumerCallbackFactory;
 
-/**
- * Class AmqpCommandConsumerCallbackFactoryTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp\Container
- */
 class AmqpCommandConsumerCallbackFactoryTest extends TestCase
 {
     /**
@@ -40,11 +36,11 @@ class AmqpCommandConsumerCallbackFactoryTest extends TestCase
                     'command_consumer_callback' => [
                         'test-command-consumer-callback' => [
                             'command_bus' => 'test-command-bus',
-                            'message_factory' => 'test-message-factory'
-                        ]
-                    ]
-                ]
-            ]
+                            'message_factory' => 'test-message-factory',
+                        ],
+                    ],
+                ],
+            ],
         ])->shouldBeCalled();
         $container->get('test-command-bus')->willReturn($commandBus->reveal())->shouldBeCalled();
         $container->get('test-message-factory')->willReturn($messageFactory->reveal())->shouldBeCalled();

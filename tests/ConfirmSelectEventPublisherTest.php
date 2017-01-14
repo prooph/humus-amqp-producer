@@ -1,8 +1,8 @@
 <?php
-/*
+/**
  * This file is part of the prooph/humus-amqp-producer.
- * (c) 2016 prooph software GmbH <contact@prooph.de>
- * (c) 2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2016-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2016-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,39 +15,14 @@ namespace ProophTest\ServiceBus\Message\HumusAmqp;
 use Humus\Amqp\Producer;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\Common\Event\ActionEvent;
-use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Event\DefaultActionEvent;
-use Prooph\EventStore\EventStore;
 use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Message\HumusAmqp\ConfirmSelectEventPublisher;
 use Prooph\ServiceBus\Plugin\Router\EventRouter;
 use Prophecy\Argument;
 
-/**
- * Class ConfirmSelectEventPublisherTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp
- */
 class ConfirmSelectEventPublisherTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function it_sets_up_event_store()
-    {
-        $eventBus = $this->prophesize(EventBus::class);
-        $producer = $this->prophesize(Producer::class);
-
-        $plugin = new ConfirmSelectEventPublisher($eventBus->reveal(), $producer->reveal(), 2.0);
-
-        $actionEventEmitter = $this->prophesize(ActionEventEmitter::class);
-        $actionEventEmitter->attachListener('commit.post', [$plugin, 'onEventStoreCommitPost'])->shouldBeCalled();
-
-        $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->getActionEventEmitter()->willReturn($actionEventEmitter->reveal())->shouldBeCalled();
-
-        $plugin->setUp($eventStore->reveal());
-    }
-
     /**
      * @test
      */
@@ -94,8 +69,8 @@ class ConfirmSelectEventPublisherTest extends TestCase
         $eventRouter->route('foo')->to(function ($event) use ($plugin, &$eventBusCalls) {
             $eventBusCalls[] = $event;
             $actionEvent = new DefaultActionEvent($event, null, [
-                'recordedEvents' => new \ArrayIterator(['baz', 'bam', 'bat'])
-            ]) ;
+                'recordedEvents' => new \ArrayIterator(['baz', 'bam', 'bat']),
+            ]);
             $plugin->onEventStoreCommitPost($actionEvent);
         });
 
@@ -112,7 +87,7 @@ class ConfirmSelectEventPublisherTest extends TestCase
             $eventBusCalls[] = $event;
         });
 
-        $eventBus->utilize($eventRouter);
+        $eventRouter->attachToMessageBus($eventBus);
 
         $plugin->onEventStoreCommitPost($actionEvent->reveal());
 
@@ -122,7 +97,7 @@ class ConfirmSelectEventPublisherTest extends TestCase
                 'bar',
                 'baz',
                 'bam',
-                'bat'
+                'bat',
             ],
             $eventBusCalls
         );

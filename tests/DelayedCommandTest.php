@@ -1,8 +1,8 @@
 <?php
-/*
+/**
  * This file is part of the prooph/humus-amqp-producer.
- * (c) 2016 prooph software GmbH <contact@prooph.de>
- * (c) 2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2016-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2016-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,10 +15,6 @@ namespace ProophTest\ServiceBus\Message\HumusAmqp;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\ServiceBus\Message\HumusAmqp\DelayedCommand;
 
-/**
- * Class DelayedCommandTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp
- */
 class DelayedCommandTest extends TestCase
 {
     /**
@@ -35,7 +31,6 @@ class DelayedCommandTest extends TestCase
         $messageData = [
             'message_name' => 'test-delayed-command',
             'uuid' => 'ccefedef-85e1-4fd0-b247-ed13d378b050',
-            'version' => 1,
             'payload' => [],
             'metadata' => [
                 'execute_at' => $now->modify('+10 seconds')->format('Y-m-d\TH:i:s.u'),
@@ -69,7 +64,7 @@ class DelayedCommandTest extends TestCase
      */
     private function delayedComamnd()
     {
-        return new class extends DelayedCommand {
+        return new class() extends DelayedCommand {
             protected $messageName = 'test-delayed-command';
 
             protected $payload;
@@ -79,12 +74,12 @@ class DelayedCommandTest extends TestCase
                 $this->init();
             }
 
-            public function payload() : array
+            public function payload(): array
             {
                 return $this->payload;
             }
 
-            protected function setPayload(array $payload)
+            protected function setPayload(array $payload): void
             {
                 $this->payload = $payload;
             }
