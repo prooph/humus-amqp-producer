@@ -57,7 +57,7 @@ final class AmqpQueryProducer implements MessageProducer
      * @throws RuntimeException If a $deferred is not passed
      * @return void
      */
-    public function __invoke(Message $message, Deferred $deferred = null)
+    public function __invoke(Message $message, Deferred $deferred = null): void
     {
         if (null === $deferred) {
             throw new RuntimeException('Deferred expected, null given');

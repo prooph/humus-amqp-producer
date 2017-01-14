@@ -19,10 +19,6 @@ use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\TransactionalEventPublisherFactory;
 use Prooph\ServiceBus\Message\HumusAmqp\TransactionalEventPublisher;
 
-/**
- * Class TransactionalEventPublisherFactoryTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp\Container
- */
 class TransactionalEventPublisherFactoryTest extends TestCase
 {
     /**

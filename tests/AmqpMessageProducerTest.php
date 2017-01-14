@@ -20,10 +20,6 @@ use Prooph\Common\Messaging\MessageConverter;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpMessageProducer;
 use React\Promise\Deferred;
 
-/**
- * Class AmqpMessageProducerTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp
- */
 class AmqpMessageProducerTest extends TestCase
 {
     /**

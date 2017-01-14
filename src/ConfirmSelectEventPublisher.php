@@ -13,13 +13,19 @@ declare(strict_types=1);
 namespace Prooph\ServiceBus\Message\HumusAmqp;
 
 use Humus\Amqp\Producer;
+use Iterator;
 use Prooph\Common\Event\ActionEvent;
+use Prooph\EventStore\ActionEventEmitterEventStore;
 use Prooph\EventStore\EventStore;
-use Prooph\EventStore\Plugin\Plugin;
+use Prooph\EventStore\Plugin\AbstractPlugin;
+use Prooph\EventStore\Plugin\Plugin as EventStorePlugin;
+use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Exception\RuntimeException;
+use Prooph\ServiceBus\MessageBus;
+use Prooph\ServiceBus\Plugin\Plugin as MessageBusPlugin;
 
-final class ConfirmSelectEventPublisher implements Plugin
+final class ConfirmSelectEventPublisher extends AbstractPlugin
 {
     /**
      * @var EventBus
@@ -53,9 +59,43 @@ final class ConfirmSelectEventPublisher implements Plugin
         $this->timeout = $timeout;
     }
 
-    public function setUp(EventStore $eventStore)
+    public function attachToEventStore(ActionEventEmitterEventStore $eventStore): void
     {
-        $eventStore->getActionEventEmitter()->attachListener('commit.post', [$this, 'onEventStoreCommitPost']);
+        $this->listenerHandlers[] = $eventStore->attach(
+            ActionEventEmitterEventStore::EVENT_APPEND_TO,
+            function (ActionEvent $event) use ($eventStore): void {
+                if (! $eventStore instanceof TransactionalActionEventEmitterEventStore) {
+                    $this->onEventStoreCommitPost($event);
+                } else {
+                    $this->queuedActionEvents[] = $event;
+                }
+            }
+        );
+        $this->listenerHandlers[] = $eventStore->attach(
+            ActionEventEmitterEventStore::EVENT_CREATE,
+            function (ActionEvent $event) use ($eventStore): void {
+                if (! $eventStore instanceof TransactionalActionEventEmitterEventStore) {
+                    $this->onEventStoreCommitPost($event);
+                } else {
+                    $this->queuedActionEvents[] = $event;
+                }
+            }
+        );
+        if ($eventStore instanceof TransactionalActionEventEmitterEventStore) {
+            $this->listenerHandlers[] = $eventStore->attach(
+                TransactionalActionEventEmitterEventStore::EVENT_COMMIT,
+                function (ActionEvent $event): void {
+                    $this->onEventStoreCommitPost($event);
+                    $this->queuedActionEvents = [];
+                }
+            );
+            $this->listenerHandlers[] = $eventStore->attach(
+                TransactionalActionEventEmitterEventStore::EVENT_ROLLBACK,
+                function (ActionEvent $event): void {
+                    $this->queuedActionEvents = [];
+                }
+            );
+        }
     }
 
     public function onEventStoreCommitPost(ActionEvent $actionEvent)

@@ -19,10 +19,6 @@ use Prooph\Common\Messaging\MessageConverter;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpMessageProducer;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpMessageProducerFactory;
 
-/**
- * Class AmqpMessageProducerFactoryTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp\Container
- */
 class AmqpMessageProducerFactoryTest extends TestCase
 {
     /**

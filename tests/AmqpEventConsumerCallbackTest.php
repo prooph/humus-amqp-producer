@@ -23,10 +23,6 @@ use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Exception\MessageDispatchException;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpEventConsumerCallback;
 
-/**
- * Class AmqpEventConsumerCallbackTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp
- */
 class AmqpEventConsumerCallbackTest extends TestCase
 {
     /**

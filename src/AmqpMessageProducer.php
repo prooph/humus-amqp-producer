@@ -49,7 +49,7 @@ final class AmqpMessageProducer implements MessageProducer
      * @throws RuntimeException If a $deferred is passed but producer can not handle it
      * @return void
      */
-    public function __invoke(Message $message, Deferred $deferred = null)
+    public function __invoke(Message $message, Deferred $deferred = null): void
     {
         if (null !== $deferred) {
             throw new RuntimeException(__CLASS__ . ' cannot handle query messages which require future responses.');

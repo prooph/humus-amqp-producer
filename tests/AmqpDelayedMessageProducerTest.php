@@ -21,10 +21,6 @@ use Prooph\ServiceBus\Message\HumusAmqp\AmqpDelayedMessageProducer;
 use Prooph\ServiceBus\Message\HumusAmqp\DelayedMessage;
 use React\Promise\Deferred;
 
-/**
- * Class AmqpDelayedMessageProducerTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp
- */
 class AmqpDelayedMessageProducerTest extends TestCase
 {
     /**

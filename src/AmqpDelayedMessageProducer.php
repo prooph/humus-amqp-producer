@@ -51,7 +51,7 @@ final class AmqpDelayedMessageProducer implements MessageProducer
      * @return void
      * @throws RuntimeException
      */
-    public function __invoke(Message $message, Deferred $deferred = null)
+    public function __invoke(Message $message, Deferred $deferred = null): void
     {
         if (! $message instanceof DelayedMessage) {
             throw new RuntimeException(sprintf(

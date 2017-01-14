@@ -17,37 +17,16 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\ActionEventEmitter;
 use Prooph\Common\Event\DefaultActionEvent;
+use Prooph\Common\Event\ListenerHandler;
+use Prooph\EventStore\ActionEventEmitterEventStore;
 use Prooph\EventStore\EventStore;
 use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Message\HumusAmqp\ConfirmSelectEventPublisher;
 use Prooph\ServiceBus\Plugin\Router\EventRouter;
 use Prophecy\Argument;
 
-/**
- * Class ConfirmSelectEventPublisherTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp
- */
 class ConfirmSelectEventPublisherTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function it_sets_up_event_store()
-    {
-        $eventBus = $this->prophesize(EventBus::class);
-        $producer = $this->prophesize(Producer::class);
-
-        $plugin = new ConfirmSelectEventPublisher($eventBus->reveal(), $producer->reveal(), 2.0);
-
-        $actionEventEmitter = $this->prophesize(ActionEventEmitter::class);
-        $actionEventEmitter->attachListener('commit.post', [$plugin, 'onEventStoreCommitPost'])->shouldBeCalled();
-
-        $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->getActionEventEmitter()->willReturn($actionEventEmitter->reveal())->shouldBeCalled();
-
-        $plugin->setUp($eventStore->reveal());
-    }
-
     /**
      * @test
      */
@@ -112,7 +91,7 @@ class ConfirmSelectEventPublisherTest extends TestCase
             $eventBusCalls[] = $event;
         });
 
-        $eventBus->utilize($eventRouter);
+        $eventRouter->attachToMessageBus($eventBus);
 
         $plugin->onEventStoreCommitPost($actionEvent->reveal());
 

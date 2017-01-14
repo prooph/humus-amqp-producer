@@ -15,6 +15,7 @@ namespace Prooph\ServiceBus\Message\HumusAmqp;
 use DateTimeImmutable;
 use DateTimeZone;
 use Prooph\Common\Messaging\Command;
+use Prooph\Common\Messaging\DomainMessage;
 
 abstract class DelayedCommand extends Command implements DelayedMessage
 {
@@ -40,7 +41,7 @@ abstract class DelayedCommand extends Command implements DelayedMessage
         return (int) floor(((float) $this->executeAt->format('U.u') - (float) $this->createdAt->format('U.u')) * 1000);
     }
 
-    public static function fromArray(array $messageData): DelayedCommand
+    public static function fromArray(array $messageData): DomainMessage
     {
         $message = parent::fromArray($messageData);
         /** @var $message self */

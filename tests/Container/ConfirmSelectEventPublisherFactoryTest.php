@@ -19,10 +19,6 @@ use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Message\HumusAmqp\ConfirmSelectEventPublisher;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\ConfirmSelectEventPublisherFactory;
 
-/**
- * Class ConfirmSelectEventPublisherFactoryTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp\Container
- */
 class ConfirmSelectEventPublisherFactoryTest extends TestCase
 {
     /**

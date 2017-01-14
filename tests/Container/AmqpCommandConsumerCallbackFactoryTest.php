@@ -19,10 +19,6 @@ use Prooph\ServiceBus\CommandBus;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpCommandConsumerCallback;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpCommandConsumerCallbackFactory;
 
-/**
- * Class AmqpCommandConsumerCallbackFactoryTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp\Container
- */
 class AmqpCommandConsumerCallbackFactoryTest extends TestCase
 {
     /**

@@ -19,10 +19,6 @@ use Prooph\Common\Messaging\MessageConverter;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpDelayedMessageProducer;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpDelayedMessageProducerFactory;
 
-/**
- * Class AmqpDelayedMessageProducerFactoryTest
- * @package ProophTest\ServiceBus\Message\HumusAmqpDelayed\Container
- */
 class AmqpDelayedMessageProducerFactoryTest extends TestCase
 {
     /**

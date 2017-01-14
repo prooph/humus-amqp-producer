@@ -23,31 +23,8 @@ use Prooph\ServiceBus\Message\HumusAmqp\TransactionalEventPublisher;
 use Prooph\ServiceBus\Plugin\Router\EventRouter;
 use Prophecy\Argument;
 
-/**
- * Class TransactionalEventPublisherTest
- * @package ProophTest\ServiceBus\Message\HumusAmqp
- */
 class TransactionalEventPublisherTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function it_sets_up_event_store()
-    {
-        $eventBus = $this->prophesize(EventBus::class);
-        $producer = $this->prophesize(Producer::class);
-
-        $plugin = new TransactionalEventPublisher($eventBus->reveal(), $producer->reveal());
-
-        $actionEventEmitter = $this->prophesize(ActionEventEmitter::class);
-        $actionEventEmitter->attachListener('commit.post', [$plugin, 'onEventStoreCommitPost'])->shouldBeCalled();
-
-        $eventStore = $this->prophesize(EventStore::class);
-        $eventStore->getActionEventEmitter()->willReturn($actionEventEmitter->reveal())->shouldBeCalled();
-
-        $plugin->setUp($eventStore->reveal());
-    }
-
     /**
      * @test
      */
@@ -110,7 +87,7 @@ class TransactionalEventPublisherTest extends TestCase
             $eventBusCalls[] = $event;
         });
 
-        $eventBus->utilize($eventRouter);
+        $eventRouter->attachToMessageBus($eventBus);
 
         $plugin->onEventStoreCommitPost($actionEvent->reveal());
 
