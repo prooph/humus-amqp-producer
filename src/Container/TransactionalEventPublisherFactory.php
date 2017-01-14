@@ -1,8 +1,8 @@
 <?php
-/*
+/**
  * This file is part of the prooph/humus-amqp-producer.
- * (c) 2016 prooph software GmbH <contact@prooph.de>
- * (c) 2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2016-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2016-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -50,11 +50,12 @@ final class TransactionalEventPublisherFactory implements
      */
     public static function __callStatic(string $eventPublisherName, array $arguments): TransactionalEventPublisher
     {
-        if (!isset($arguments[0]) || !$arguments[0] instanceof ContainerInterface) {
+        if (! isset($arguments[0]) || ! $arguments[0] instanceof ContainerInterface) {
             throw new Exception\InvalidArgumentException(
                 sprintf('The first argument must be of type %s', ContainerInterface::class)
             );
         }
+
         return (new static($eventPublisherName))->__invoke($arguments[0]);
     }
 
@@ -88,7 +89,7 @@ final class TransactionalEventPublisherFactory implements
     public function mandatoryOptions(): array
     {
         return [
-            'producer'
+            'producer',
         ];
     }
 }

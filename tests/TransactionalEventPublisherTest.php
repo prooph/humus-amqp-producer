@@ -1,8 +1,8 @@
 <?php
-/*
+/**
  * This file is part of the prooph/humus-amqp-producer.
- * (c) 2016 prooph software GmbH <contact@prooph.de>
- * (c) 2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2016-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2016-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -92,8 +92,8 @@ class TransactionalEventPublisherTest extends TestCase
         $eventRouter->route('foo')->to(function ($event) use ($plugin, &$eventBusCalls) {
             $eventBusCalls[] = $event;
             $actionEvent = new DefaultActionEvent($event, null, [
-                'recordedEvents' => new \ArrayIterator(['baz', 'bam', 'bat'])
-            ]) ;
+                'recordedEvents' => new \ArrayIterator(['baz', 'bam', 'bat']),
+            ]);
             $plugin->onEventStoreCommitPost($actionEvent);
         });
 
@@ -120,7 +120,7 @@ class TransactionalEventPublisherTest extends TestCase
                 'bar',
                 'baz',
                 'bam',
-                'bat'
+                'bat',
             ],
             $eventBusCalls
         );
