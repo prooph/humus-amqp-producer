@@ -14,7 +14,7 @@ namespace ProophTest\ServiceBus\Message\HumusAmqp;
 
 use Humus\Amqp\Constants;
 use Humus\Amqp\Producer;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpDelayedMessageProducer;

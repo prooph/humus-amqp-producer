@@ -14,7 +14,7 @@ namespace ProophTest\ServiceBus\Message\HumusAmqpDelayed\Container;
 
 use Humus\Amqp\Producer;
 use Interop\Container\ContainerInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prooph\ServiceBus\Async\MessageProducer;
 use Prooph\ServiceBus\Exception\InvalidArgumentException;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpMessageProducerPluginFactory;

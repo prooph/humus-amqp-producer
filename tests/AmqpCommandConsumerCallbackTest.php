@@ -15,7 +15,7 @@ namespace ProophTest\ServiceBus\Message\HumusAmqp;
 use Humus\Amqp\DeliveryResult;
 use Humus\Amqp\Envelope;
 use Humus\Amqp\Queue;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Command;
 use Prooph\Common\Messaging\MessageFactory;
 use Prooph\EventStore\Exception\ConcurrencyException;

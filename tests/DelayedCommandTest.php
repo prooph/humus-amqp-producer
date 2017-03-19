@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace ProophTest\ServiceBus\Message\HumusAmqp;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prooph\ServiceBus\Message\HumusAmqp\DelayedCommand;
 
 class DelayedCommandTest extends TestCase

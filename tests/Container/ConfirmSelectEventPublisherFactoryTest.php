@@ -14,7 +14,7 @@ namespace ProophTest\ServiceBus\Message\HumusAmqp\Container;
 
 use Humus\Amqp\Producer;
 use Interop\Container\ContainerInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Message\HumusAmqp\ConfirmSelectEventPublisher;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\ConfirmSelectEventPublisherFactory;
