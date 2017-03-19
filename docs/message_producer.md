@@ -152,3 +152,23 @@ return [
     ],
 ];
 ```
+
+# Delayed Messages
+
+Delayed messages are messages that should be executed at a specific point in time.
+F.e. execute a command in 5min from now on.
+
+In order to make it really work, you need to configure a delayed message exchange and configure it accordingly.
+The RabbitMQ extension [delayed-message-exchange](https://github.com/rabbitmq/rabbitmq-delayed-message-exchange) is required.
+
+A delayed message must implement `Prooph\ServiceBus\Message\HumusAmqp\DelayedMessage`.
+If you are using `Prooph\Common\Messaging\Command` as your base command class, you can simply use
+`Prooph\ServiceBus\Message\HumusAmqp\DelayedCommand` instead.
+
+## Usage
+
+```php
+$command = SomeCommand::withData(['foo' => 'bar'])->executeAt((new DateTimeImmutable('now'))->modify('+5 mins'));
+
+$commandBus->dispatch($command);
+```
