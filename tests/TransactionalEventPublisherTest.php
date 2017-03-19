@@ -12,13 +12,22 @@ declare(strict_types=1);
 
 namespace ProophTest\ServiceBus\Message\HumusAmqp;
 
+use ArrayIterator;
 use Humus\Amqp\Producer;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\DefaultActionEvent;
+use Prooph\Common\Event\ProophActionEventEmitter;
+use Prooph\EventStore\ActionEventEmitterEventStore;
+use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Stream;
+use Prooph\EventStore\StreamName;
+use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
+use Prooph\EventStore\TransactionalEventStore;
 use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Message\HumusAmqp\TransactionalEventPublisher;
 use Prooph\ServiceBus\Plugin\Router\EventRouter;
+use ProophTest\EventStore\Mock\TestDomainEvent;
 use Prophecy\Argument;
 
 class TransactionalEventPublisherTest extends TestCase
@@ -30,7 +39,8 @@ class TransactionalEventPublisherTest extends TestCase
     {
         $actionEvent = $this->prophesize(ActionEvent::class);
         $iterator = new \ArrayIterator(['foo', 'bar']);
-        $actionEvent->getParam('recordedEvents', new \ArrayIterator())->willReturn($iterator)->shouldBeCalled();
+        $actionEvent->getParam('stream')->willReturn(null)->shouldBeCalled();
+        $actionEvent->getParam('streamEvents', new ArrayIterator())->willReturn($iterator)->shouldBeCalled();
 
         $eventBus = $this->prophesize(EventBus::class);
         $eventBus->dispatch('foo')->shouldBeCalled();
@@ -51,7 +61,8 @@ class TransactionalEventPublisherTest extends TestCase
     {
         $actionEvent = $this->prophesize(ActionEvent::class);
         $iterator = new \ArrayIterator(['foo', 'bar']);
-        $actionEvent->getParam('recordedEvents', new \ArrayIterator())->willReturn($iterator)->shouldBeCalled();
+        $actionEvent->getParam('stream')->willReturn(null)->shouldBeCalled();
+        $actionEvent->getParam('streamEvents', new ArrayIterator())->willReturn($iterator)->shouldBeCalled();
 
         $producer = $this->prophesize(Producer::class);
         $producer->startTransaction()->shouldBeCalledTimes(2);
@@ -67,7 +78,7 @@ class TransactionalEventPublisherTest extends TestCase
         $eventRouter->route('foo')->to(function ($event) use ($plugin, &$eventBusCalls) {
             $eventBusCalls[] = $event;
             $actionEvent = new DefaultActionEvent($event, null, [
-                'recordedEvents' => new \ArrayIterator(['baz', 'bam', 'bat']),
+                'streamEvents' => new \ArrayIterator(['baz', 'bam', 'bat']),
             ]);
             $plugin->onEventStoreCommitPost($actionEvent);
         });
@@ -99,6 +110,95 @@ class TransactionalEventPublisherTest extends TestCase
             ],
             $eventBusCalls
         );
+    }
+
+    /**
+     * @test
+     */
+    public function it_queues_events_appended_to_transactional_event_store(): void
+    {
+        $eventStore = $this->prophesize(TransactionalEventStore::class);
+        $eventStore = new TransactionalActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $streamName = new StreamName('test-stream');
+
+        $eventBus = $this->prophesize(EventBus::class);
+        $eventBus->dispatch(Argument::any())->shouldBeCalledTimes(2);
+
+        $producer = $this->prophesize(Producer::class);
+        $producer->startTransaction()->shouldBeCalled();
+        $producer->commitTransaction()->shouldBeCalled();
+
+        $plugin = new TransactionalEventPublisher($eventBus->reveal(), $producer->reveal());
+        $plugin->attachToEventStore($eventStore);
+
+        $eventStore->beginTransaction();
+
+        $eventStore->create(
+            new Stream($streamName, new ArrayIterator([new TestDomainEvent(['foo' => 'bar'])]))
+        );
+
+        $eventStore->appendTo($streamName, new ArrayIterator([new TestDomainEvent(['foo' => 'baz'])]));
+
+        $eventStore->commit();
+    }
+
+    /**
+     * @test
+     */
+    public function it_dispatches_events_appended_to_event_store(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $streamName = new StreamName('test-stream');
+
+        $eventBus = $this->prophesize(EventBus::class);
+        $eventBus->dispatch(Argument::any())->shouldBeCalledTimes(2);
+
+        $producer = $this->prophesize(Producer::class);
+        $producer->startTransaction()->shouldBeCalledTimes(2);
+        $producer->commitTransaction()->shouldBeCalledTimes(2);
+
+        $plugin = new TransactionalEventPublisher($eventBus->reveal(), $producer->reveal());
+        $plugin->attachToEventStore($eventStore);
+
+        $eventStore->create(
+            new Stream($streamName, new ArrayIterator([new TestDomainEvent(['foo' => 'bar'])]))
+        );
+
+        $eventStore->appendTo($streamName, new ArrayIterator([new TestDomainEvent(['foo' => 'baz'])]));
+    }
+
+    /**
+     * @test
+     */
+    public function it_dequeues_events_when_transactional_event_store_is_rolled_back(): void
+    {
+        $eventStore = $this->prophesize(TransactionalEventStore::class);
+        $eventStore = new TransactionalActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $streamName = new StreamName('test-stream');
+
+        $eventBus = $this->prophesize(EventBus::class);
+        $eventBus->dispatch(Argument::any())->shouldNotBeCalled();
+
+        $producer = $this->prophesize(Producer::class);
+        $producer->startTransaction()->shouldNotBeCalled();
+        $producer->commitTransaction()->shouldNotBeCalled();
+
+        $plugin = new TransactionalEventPublisher($eventBus->reveal(), $producer->reveal());
+        $plugin->attachToEventStore($eventStore);
+
+        $eventStore->beginTransaction();
+
+        $eventStore->create(
+            new Stream($streamName, new ArrayIterator([new TestDomainEvent(['foo' => 'bar'])]))
+        );
+
+        $eventStore->appendTo($streamName, new ArrayIterator([new TestDomainEvent(['foo' => 'baz'])]));
+
+        $eventStore->rollback();
     }
 
     /**

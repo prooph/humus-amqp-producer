@@ -12,10 +12,12 @@ declare(strict_types=1);
 
 namespace Prooph\ServiceBus\Message\HumusAmqp;
 
+use ArrayIterator;
 use Humus\Amqp\Producer;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\EventStore\ActionEventEmitterEventStore;
 use Prooph\EventStore\Plugin\AbstractPlugin;
+use Prooph\EventStore\Stream;
 use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
 use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Exception\RuntimeException;
@@ -101,8 +103,16 @@ final class ConfirmSelectEventPublisher extends AbstractPlugin
             $this->inConfirmSelectMode = true;
 
             while ($actionEvent = array_shift($this->queuedActionEvents)) {
-                $fallback = new \ArrayIterator();
-                $recordedEvents = $actionEvent->getParam('recordedEvents', $fallback);
+                $fallback = new ArrayIterator();
+                $recordedEvents = $actionEvent->getParam('stream');
+
+                if ($recordedEvents instanceof Stream) {
+                    // stream was created
+                    $recordedEvents = $recordedEvents->streamEvents();
+                } else {
+                    // events were appended
+                    $recordedEvents = $actionEvent->getParam('streamEvents', $fallback);
+                }
 
                 if ($fallback !== $recordedEvents) {
                     $this->producer->confirmSelect();

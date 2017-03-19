@@ -37,7 +37,7 @@
         "container-interop/container-interop": "^1.1",
         "phpspec/prophecy": "^1.7",
         "prooph/php-cs-fixer-config": "^0.1.1",
-        "phpunit/phpunit": "^6",
+        "phpunit/phpunit": "^6.0",
         "prooph/event-store" : "^7.0-beta4",
         "react/promise": "^2.4.1",
         "sandrokeil/interop-config": "^2.0.1",
@@ -62,7 +62,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "ProophTest\\ServiceBus\\": "vendor/prooph/service-bus/tests/"
+            "ProophTest\\ServiceBus\\": "vendor/prooph/service-bus/tests/",
+            "ProophTest\\EventStore\\": "vendor/prooph/event-store/tests/"
         }
     },
     "scripts": {

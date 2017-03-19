@@ -12,13 +12,22 @@ declare(strict_types=1);
 
 namespace ProophTest\ServiceBus\Message\HumusAmqp;
 
+use ArrayIterator;
 use Humus\Amqp\Producer;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Event\ActionEvent;
 use Prooph\Common\Event\DefaultActionEvent;
+use Prooph\Common\Event\ProophActionEventEmitter;
+use Prooph\EventStore\ActionEventEmitterEventStore;
+use Prooph\EventStore\EventStore;
+use Prooph\EventStore\Stream;
+use Prooph\EventStore\StreamName;
+use Prooph\EventStore\TransactionalActionEventEmitterEventStore;
+use Prooph\EventStore\TransactionalEventStore;
 use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Message\HumusAmqp\ConfirmSelectEventPublisher;
 use Prooph\ServiceBus\Plugin\Router\EventRouter;
+use ProophTest\EventStore\Mock\TestDomainEvent;
 use Prophecy\Argument;
 
 class ConfirmSelectEventPublisherTest extends TestCase
@@ -29,8 +38,9 @@ class ConfirmSelectEventPublisherTest extends TestCase
     public function it_confirms_select_and_waits_for_confirm_on_event_store_commit_post()
     {
         $actionEvent = $this->prophesize(ActionEvent::class);
-        $iterator = new \ArrayIterator(['foo', 'bar']);
-        $actionEvent->getParam('recordedEvents', new \ArrayIterator())->willReturn($iterator)->shouldBeCalled();
+        $iterator = new ArrayIterator(['foo', 'bar']);
+        $actionEvent->getParam('stream')->willReturn(null)->shouldBeCalled();
+        $actionEvent->getParam('streamEvents', new ArrayIterator())->willReturn($iterator)->shouldBeCalled();
 
         $eventBus = $this->prophesize(EventBus::class);
         $eventBus->dispatch('foo')->shouldBeCalled();
@@ -51,8 +61,9 @@ class ConfirmSelectEventPublisherTest extends TestCase
     public function it_confirms_select_one_action_event_after_the_other()
     {
         $actionEvent = $this->prophesize(ActionEvent::class);
-        $iterator = new \ArrayIterator(['foo', 'bar']);
-        $actionEvent->getParam('recordedEvents', new \ArrayIterator())->willReturn($iterator)->shouldBeCalled();
+        $iterator = new ArrayIterator(['foo', 'bar']);
+        $actionEvent->getParam('stream')->willReturn(null)->shouldBeCalled();
+        $actionEvent->getParam('streamEvents', new ArrayIterator())->willReturn($iterator)->shouldBeCalled();
 
         $producer = $this->prophesize(Producer::class);
         $producer->confirmSelect()->shouldBeCalledTimes(2);
@@ -69,7 +80,7 @@ class ConfirmSelectEventPublisherTest extends TestCase
         $eventRouter->route('foo')->to(function ($event) use ($plugin, &$eventBusCalls) {
             $eventBusCalls[] = $event;
             $actionEvent = new DefaultActionEvent($event, null, [
-                'recordedEvents' => new \ArrayIterator(['baz', 'bam', 'bat']),
+                'streamEvents' => new ArrayIterator(['baz', 'bam', 'bat']),
             ]);
             $plugin->onEventStoreCommitPost($actionEvent);
         });
@@ -101,6 +112,98 @@ class ConfirmSelectEventPublisherTest extends TestCase
             ],
             $eventBusCalls
         );
+    }
+
+    /**
+     * @test
+     */
+    public function it_queues_events_appended_to_transactional_event_store(): void
+    {
+        $eventStore = $this->prophesize(TransactionalEventStore::class);
+        $eventStore = new TransactionalActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $streamName = new StreamName('test-stream');
+
+        $eventBus = $this->prophesize(EventBus::class);
+        $eventBus->dispatch(Argument::any())->shouldBeCalledTimes(2);
+
+        $producer = $this->prophesize(Producer::class);
+        $producer->confirmSelect()->shouldBeCalled();
+        $producer->setConfirmCallback(Argument::type('callable'), Argument::type('callable'))->shouldBeCalled();
+        $producer->waitForConfirm(2)->shouldBeCalled();
+
+        $plugin = new ConfirmSelectEventPublisher($eventBus->reveal(), $producer->reveal());
+        $plugin->attachToEventStore($eventStore);
+
+        $eventStore->beginTransaction();
+
+        $eventStore->create(
+            new Stream($streamName, new ArrayIterator([new TestDomainEvent(['foo' => 'bar'])]))
+        );
+
+        $eventStore->appendTo($streamName, new ArrayIterator([new TestDomainEvent(['foo' => 'baz'])]));
+
+        $eventStore->commit();
+    }
+
+    /**
+     * @test
+     */
+    public function it_dispatches_events_appended_to_event_store(): void
+    {
+        $eventStore = $this->prophesize(EventStore::class);
+        $eventStore = new ActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $streamName = new StreamName('test-stream');
+
+        $eventBus = $this->prophesize(EventBus::class);
+        $eventBus->dispatch(Argument::any())->shouldBeCalledTimes(2);
+
+        $producer = $this->prophesize(Producer::class);
+        $producer->confirmSelect()->shouldBeCalledTimes(2);
+        $producer->setConfirmCallback(Argument::type('callable'), Argument::type('callable'))->shouldBeCalledTimes(2);
+        $producer->waitForConfirm(2)->shouldBeCalledTimes(2);
+
+        $plugin = new ConfirmSelectEventPublisher($eventBus->reveal(), $producer->reveal());
+        $plugin->attachToEventStore($eventStore);
+
+        $eventStore->create(
+            new Stream($streamName, new ArrayIterator([new TestDomainEvent(['foo' => 'bar'])]))
+        );
+
+        $eventStore->appendTo($streamName, new ArrayIterator([new TestDomainEvent(['foo' => 'baz'])]));
+    }
+
+    /**
+     * @test
+     */
+    public function it_dequeues_events_when_transactional_event_store_is_rolled_back(): void
+    {
+        $eventStore = $this->prophesize(TransactionalEventStore::class);
+        $eventStore = new TransactionalActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $streamName = new StreamName('test-stream');
+
+        $eventBus = $this->prophesize(EventBus::class);
+        $eventBus->dispatch(Argument::any())->shouldNotBeCalled();
+
+        $producer = $this->prophesize(Producer::class);
+        $producer->confirmSelect()->shouldNotBeCalled();
+        $producer->setConfirmCallback(Argument::type('callable'), Argument::type('callable'))->shouldNotBeCalled();
+        $producer->waitForConfirm(2)->shouldNotBeCalled();
+
+        $plugin = new ConfirmSelectEventPublisher($eventBus->reveal(), $producer->reveal());
+        $plugin->attachToEventStore($eventStore);
+
+        $eventStore->beginTransaction();
+
+        $eventStore->create(
+            new Stream($streamName, new ArrayIterator([new TestDomainEvent(['foo' => 'bar'])]))
+        );
+
+        $eventStore->appendTo($streamName, new ArrayIterator([new TestDomainEvent(['foo' => 'baz'])]));
+
+        $eventStore->rollback();
     }
 
     /**
