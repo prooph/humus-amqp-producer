@@ -17,6 +17,7 @@ use Humus\Amqp\Producer;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\Common\Messaging\MessageConverter;
+use Prooph\ServiceBus\Exception\RuntimeException;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpDelayedMessageProducer;
 use Prooph\ServiceBus\Message\HumusAmqp\DelayedMessage;
 use React\Promise\Deferred;
@@ -26,7 +27,7 @@ class AmqpDelayedMessageProducerTest extends TestCase
     /**
      * @test
      */
-    public function it_publishes_messages()
+    public function it_publishes_messages(): void
     {
         $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 
@@ -78,9 +79,9 @@ class AmqpDelayedMessageProducerTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_deferred_passed()
+    public function it_throws_exception_when_deferred_passed(): void
     {
-        $this->expectException(\Prooph\ServiceBus\Exception\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Prooph\ServiceBus\Message\HumusAmqp\AmqpDelayedMessageProducer cannot handle query messages which require future responses.');
 
         $producer = $this->prophesize(Producer::class);
@@ -95,9 +96,9 @@ class AmqpDelayedMessageProducerTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_no_delayed_message_passed()
+    public function it_throws_exception_when_no_delayed_message_passed(): void
     {
-        $this->expectException(\Prooph\ServiceBus\Exception\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Message is not a delayed message (instance of Prooph\ServiceBus\Message\HumusAmqp\DelayedMessage)');
 
         $producer = $this->prophesize(Producer::class);

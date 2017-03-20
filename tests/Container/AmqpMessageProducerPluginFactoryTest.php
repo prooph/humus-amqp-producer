@@ -25,7 +25,7 @@ class AmqpMessageProducerPluginFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_message_producer_plugin()
+    public function it_creates_message_producer_plugin(): void
     {
         $producer = $this->prophesize(MessageProducer::class);
 
@@ -40,7 +40,7 @@ class AmqpMessageProducerPluginFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_message_producer_plugin_via_callstatic()
+    public function it_creates_message_producer_plugin_via_callstatic(): void
     {
         $producer = $this->prophesize(MessageProducer::class);
 
@@ -55,11 +55,11 @@ class AmqpMessageProducerPluginFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_given_invalid_container_to_callstatic()
+    public function it_throws_exception_given_invalid_container_to_callstatic(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         $name = 'producer';
-        $plugin = AmqpMessageProducerPluginFactory::$name('invalid container');
+        AmqpMessageProducerPluginFactory::$name('invalid container');
     }
 }

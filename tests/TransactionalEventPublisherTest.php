@@ -35,7 +35,7 @@ class TransactionalEventPublisherTest extends TestCase
     /**
      * @test
      */
-    public function it_starts_transactions_and_commits_on_event_store_commit_post()
+    public function it_starts_transactions_and_commits_on_event_store_commit_post(): void
     {
         $actionEvent = $this->prophesize(ActionEvent::class);
         $iterator = new \ArrayIterator(['foo', 'bar']);
@@ -57,7 +57,7 @@ class TransactionalEventPublisherTest extends TestCase
     /**
      * @test
      */
-    public function it_confirms_select_one_action_event_after_the_other()
+    public function it_confirms_select_one_action_event_after_the_other(): void
     {
         $actionEvent = $this->prophesize(ActionEvent::class);
         $iterator = new \ArrayIterator(['foo', 'bar']);
@@ -75,7 +75,7 @@ class TransactionalEventPublisherTest extends TestCase
         $eventBusCalls = [];
 
         $eventRouter = new EventRouter();
-        $eventRouter->route('foo')->to(function ($event) use ($plugin, &$eventBusCalls) {
+        $eventRouter->route('foo')->to(function ($event) use ($plugin, &$eventBusCalls): void {
             $eventBusCalls[] = $event;
             $actionEvent = new DefaultActionEvent($event, null, [
                 'streamEvents' => new \ArrayIterator(['baz', 'bam', 'bat']),
@@ -83,16 +83,16 @@ class TransactionalEventPublisherTest extends TestCase
             $plugin->onEventStoreCommitPost($actionEvent);
         });
 
-        $eventRouter->route('bar')->to(function ($event) use (&$eventBusCalls) {
+        $eventRouter->route('bar')->to(function ($event) use (&$eventBusCalls): void {
             $eventBusCalls[] = $event;
         });
-        $eventRouter->route('baz')->to(function ($event) use (&$eventBusCalls) {
+        $eventRouter->route('baz')->to(function ($event) use (&$eventBusCalls): void {
             $eventBusCalls[] = $event;
         });
-        $eventRouter->route('bam')->to(function ($event) use (&$eventBusCalls) {
+        $eventRouter->route('bam')->to(function ($event) use (&$eventBusCalls): void {
             $eventBusCalls[] = $event;
         });
-        $eventRouter->route('bat')->to(function ($event) use (&$eventBusCalls) {
+        $eventRouter->route('bat')->to(function ($event) use (&$eventBusCalls): void {
             $eventBusCalls[] = $event;
         });
 
@@ -204,7 +204,7 @@ class TransactionalEventPublisherTest extends TestCase
     /**
      * @test
      */
-    public function it_does_nothing_when_no_recorded_events()
+    public function it_does_nothing_when_no_recorded_events(): void
     {
         $actionEvent = new DefaultActionEvent('name');
 

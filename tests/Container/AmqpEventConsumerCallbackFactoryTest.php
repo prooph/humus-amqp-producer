@@ -24,7 +24,7 @@ class AmqpEventConsumerCallbackFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_amqp_event_consumer_callback()
+    public function it_creates_amqp_event_consumer_callback(): void
     {
         $eventBus = $this->prophesize(EventBus::class);
         $messageFactory = $this->prophesize(MessageFactory::class);
@@ -53,7 +53,7 @@ class AmqpEventConsumerCallbackFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_no_container_passed_to_call_static()
+    public function it_throws_exception_when_no_container_passed_to_call_static(): void
     {
         $this->expectException(\Prooph\ServiceBus\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('The first argument must be of type ' . ContainerInterface::class);

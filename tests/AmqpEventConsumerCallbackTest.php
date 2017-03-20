@@ -28,7 +28,7 @@ class AmqpEventConsumerCallbackTest extends TestCase
     /**
      * @test
      */
-    public function it_acks_message_when_all_good()
+    public function it_acks_message_when_all_good(): void
     {
         $time = (string) microtime(true);
         if (false === strpos($time, '.')) {
@@ -74,7 +74,7 @@ class AmqpEventConsumerCallbackTest extends TestCase
     /**
      * @test
      */
-    public function it_rejects_message_when_created_at_missing()
+    public function it_rejects_message_when_created_at_missing(): void
     {
         $envelope = $this->prophesize(Envelope::class);
         $envelope
@@ -96,7 +96,7 @@ class AmqpEventConsumerCallbackTest extends TestCase
     /**
      * @test
      */
-    public function it_rejects_message_when_invalid_created_at_given()
+    public function it_rejects_message_when_invalid_created_at_given(): void
     {
         $envelope = $this->prophesize(Envelope::class);
         $envelope
@@ -118,7 +118,7 @@ class AmqpEventConsumerCallbackTest extends TestCase
     /**
      * @test
      */
-    public function it_rejects_message_when_exception_occurred()
+    public function it_rejects_message_when_exception_occurred(): void
     {
         $time = (string) microtime(true);
         if (false === strpos($time, '.')) {
@@ -164,7 +164,7 @@ class AmqpEventConsumerCallbackTest extends TestCase
     /**
      * @test
      */
-    public function it_rejects_and_requeues_message_when_concurrency_exception_occurred()
+    public function it_rejects_and_requeues_message_when_concurrency_exception_occurred(): void
     {
         $time = (string) microtime(true);
         if (false === strpos($time, '.')) {

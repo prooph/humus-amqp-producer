@@ -24,7 +24,7 @@ class AmqpDelayedMessageProducerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_amqpDelayed_message_producer()
+    public function it_creates_amqpDelayed_message_producer(): void
     {
         $producer = $this->prophesize(Producer::class);
         $messageConverter = $this->prophesize(MessageConverter::class);
@@ -54,7 +54,7 @@ class AmqpDelayedMessageProducerFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_no_container_passed_to_call_static()
+    public function it_throws_exception_when_no_container_passed_to_call_static(): void
     {
         $this->expectException(\Prooph\ServiceBus\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('The first argument must be of type ' . ContainerInterface::class);
