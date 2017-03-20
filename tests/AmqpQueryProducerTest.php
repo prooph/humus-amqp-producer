@@ -19,6 +19,7 @@ use Humus\Amqp\Envelope;
 use Humus\Amqp\Exchange;
 use Humus\Amqp\JsonRpc\JsonRpcClient;
 use Humus\Amqp\JsonRpc\JsonRpcResponse;
+use Humus\Amqp\JsonRpc\ResponseCollection;
 use Humus\Amqp\Producer;
 use Humus\Amqp\Queue;
 use PHPUnit\Framework\TestCase;
@@ -27,6 +28,7 @@ use Prooph\Common\Messaging\MessageConverter;
 use Prooph\Common\Messaging\NoOpMessageConverter;
 use Prooph\ServiceBus\Exception\RuntimeException;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpQueryProducer;
+use Prooph\ServiceBus\Message\HumusAmqp\ParallelMessage;
 use ProophTest\ServiceBus\Mock\FetchSomething;
 use Prophecy\Argument;
 use React\Promise\Deferred;
@@ -51,7 +53,7 @@ class AmqpQueryProducerTest extends TestCase
         $envelope->getContentEncoding()->willReturn('UTF-8')->shouldBeCalled();
         $envelope->getContentType()->willReturn('application/json')->shouldBeCalled();
         $envelope->getBody()->willReturn(json_encode($result))->shouldBeCalled();
-        $envelope->getCorrelationId()->willReturn($message->uuid()->toString());
+        $envelope->getCorrelationId()->willReturn($message->uuid()->toString())->shouldBeCalled();
 
         $options = $this->prophesize(ConnectionOptions::class);
         $options->getLogin()->willReturn('sasa')->shouldBeCalled();
@@ -141,7 +143,6 @@ class AmqpQueryProducerTest extends TestCase
 
     /**
      * @test
-     * @group by
      */
     public function it_throws_exception_when_no_suitable_server_found_for_message(): void
     {
@@ -168,6 +169,79 @@ class AmqpQueryProducerTest extends TestCase
      */
     public function it_queries_parallel_messages(): void
     {
+        $message1 = new FetchSomething(['foo' => 'bar']);
+        $message2 = new FetchSomething(['foo' => 'baz']);
+
+        $message = $this->prophesize(ParallelMessage::class);
+        $message->messages()->willReturn([$message1, $message2])->shouldBeCalled();
+
+        $response1 = ['some' => 'result'];
+        $response2 = ['some' => 'other result'];
+
+        $result1 = [
+            'result' => $response1,
+        ];
+
+        $result2 = [
+            'result' => $response2,
+        ];
+
+        $envelope1 = $this->prophesize(Envelope::class);
+        $envelope1->getHeader('jsonrpc')->willReturn(JsonRpcResponse::JSONRPC_VERSION)->shouldBeCalled();
+        $envelope1->getContentEncoding()->willReturn('UTF-8')->shouldBeCalled();
+        $envelope1->getContentType()->willReturn('application/json')->shouldBeCalled();
+        $envelope1->getBody()->willReturn(json_encode($result1))->shouldBeCalled();
+        $envelope1->getCorrelationId()->willReturn($message1->uuid()->toString())->shouldBeCalled();
+
+        $envelope2 = $this->prophesize(Envelope::class);
+        $envelope2->getHeader('jsonrpc')->willReturn(JsonRpcResponse::JSONRPC_VERSION)->shouldBeCalled();
+        $envelope2->getContentEncoding()->willReturn('UTF-8')->shouldBeCalled();
+        $envelope2->getContentType()->willReturn('application/json')->shouldBeCalled();
+        $envelope2->getBody()->willReturn(json_encode($result2))->shouldBeCalled();
+        $envelope2->getCorrelationId()->willReturn($message2->uuid()->toString())->shouldBeCalled();
+
+        $options = $this->prophesize(ConnectionOptions::class);
+        $options->getLogin()->willReturn('sasa')->shouldBeCalled();
+
+        $connection = $this->prophesize(Connection::class);
+        $connection->getOptions()->willReturn($options->reveal());
+
+        $queue = $this->prophesize(Queue::class);
+        $queue->getName()->willReturn('test-queue')->shouldBeCalled();
+        $queue->get(Constants::AMQP_AUTOACK)->willReturn($envelope1->reveal(), $envelope2->reveal())->shouldBeCalledTimes(2);
+        $queue->getConnection()->willReturn($connection->reveal())->shouldBeCalled();
+
+        $exchange = $this->prophesize(Exchange::class);
+        $exchange->publish(Argument::any(), Argument::any(), Constants::AMQP_NOPARAM, Argument::any())->shouldBeCalledTimes(2);
+
+        $client = new JsonRpcClient($queue->reveal(), ['test-server' => $exchange->reveal()]);
+
+        $producer = new AmqpQueryProducer($client, new NoOpMessageConverter(), [], 'test-server');
+
+        $deferred = new Deferred();
+
+        $producer($message->reveal(), $deferred);
+
+        $hitCounter = 0;
+
+        $promise = $deferred->promise();
+        $promise->then(function (ResponseCollection $collection) use (&$response1, &$response2, &$hitCounter): void {
+            foreach ($collection as $result) {
+                ++$hitCounter;
+                if (1 === $hitCounter) {
+                    $this->assertEquals($response1, $result->result());
+                }
+                if (2 === $hitCounter) {
+                    $this->assertEquals($response2, $result->result());
+                }
+            }
+        });
+
+        $promise->otherwise(function () {
+            $this->fail('Promise rejected');
+        });
+
+        $this->assertEquals(2, $hitCounter);
     }
 
     /**

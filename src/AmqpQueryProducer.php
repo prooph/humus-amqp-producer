@@ -85,13 +85,13 @@ final class AmqpQueryProducer implements MessageProducer
                 $data = $this->arrayFromMessage($parallelMessage);
 
                 $this->client->addRequest(new JsonRpcRequest(
-                    $this->serverName($message->messageName()),
-                    $message->messageName(),
+                    $this->serverName($parallelMessage->messageName()),
+                    $parallelMessage->messageName(),
                     $data,
-                    $message->uuid()->toString(),
-                    $message->messageName(),
+                    $parallelMessage->uuid()->toString(),
+                    $parallelMessage->messageName(),
                     0,
-                    $message->createdAt()->getTimestamp()
+                    $parallelMessage->createdAt()->getTimestamp()
                 ));
             }
 
