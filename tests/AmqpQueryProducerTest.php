@@ -37,7 +37,7 @@ class AmqpQueryProducerTest extends TestCase
     /**
      * @test
      */
-    public function it_queries(): void
+    public function it_queries()
     {
         $message = new FetchSomething(['foo' => 'bar']);
 
@@ -79,7 +79,7 @@ class AmqpQueryProducerTest extends TestCase
         $hit = false;
 
         $promise = $deferred->promise();
-        $promise->then(function (array $res) use (&$response, &$hit): void {
+        $promise->then(function (array $res) use (&$response, &$hit) {
             $this->assertEquals($response, $res);
             $hit = true;
         });
@@ -94,7 +94,7 @@ class AmqpQueryProducerTest extends TestCase
     /**
      * @test
      */
-    public function it_handles_json_rpc_errors(): void
+    public function it_handles_json_rpc_errors()
     {
         $message = new FetchSomething(['foo' => 'bar']);
 
@@ -128,11 +128,11 @@ class AmqpQueryProducerTest extends TestCase
         $hit = false;
 
         $promise = $deferred->promise();
-        $promise->then(function (): void {
+        $promise->then(function () {
             $this->fail('Result returned');
         });
 
-        $promise->otherwise(function (string $error) use (&$hit): void {
+        $promise->otherwise(function (string $error) use (&$hit) {
             $this->assertEquals('Invalid JSON-RPC response', $error);
             $hit = true;
         });
@@ -143,7 +143,7 @@ class AmqpQueryProducerTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_no_suitable_server_found_for_message(): void
+    public function it_throws_exception_when_no_suitable_server_found_for_message()
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('No server found for ProophTest\ServiceBus\Mock\FetchSomething');
@@ -166,7 +166,7 @@ class AmqpQueryProducerTest extends TestCase
     /**
      * @test
      */
-    public function it_queries_parallel_messages(): void
+    public function it_queries_parallel_messages()
     {
         $message1 = new FetchSomething(['foo' => 'bar']);
         $message2 = new FetchSomething(['foo' => 'baz']);
@@ -224,7 +224,7 @@ class AmqpQueryProducerTest extends TestCase
         $hitCounter = 0;
 
         $promise = $deferred->promise();
-        $promise->then(function (ResponseCollection $collection) use (&$response1, &$response2, &$hitCounter): void {
+        $promise->then(function (ResponseCollection $collection) use (&$response1, &$response2, &$hitCounter) {
             foreach ($collection as $result) {
                 ++$hitCounter;
                 if (1 === $hitCounter) {
@@ -246,7 +246,7 @@ class AmqpQueryProducerTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_no_deferred_passed(): void
+    public function it_throws_exception_when_no_deferred_passed()
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Deferred expected, null given');
