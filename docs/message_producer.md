@@ -173,3 +173,85 @@ $command = SomeCommand::withData(['foo' => 'bar'])->executeAt((new DateTimeImmut
 $commandBus->dispatch($command);
 ```
 
+# Query producer
+
+With an amqp query producer you can do two things:
+
+a) send a query to a remote server and get a response
+b) send a parallel query to multiple remote servers and thus allow quering in parallel
+
+The latter is especially useful if you need to do multiple larger queries in a webrequest, so those can be resolved
+in a shorter period of time.
+
+## Usage
+
+For configuration example, see above.
+
+```php
+$promise = $queryBus->dispatch($query);
+$promise->then(function (array $res): void {
+    // do something
+});
+
+$promise->otherwise(function () {
+    // do something else
+});
+```
+
+## Parallel messages
+
+A parallel message has to implement `Prooph\ServiceBus\Message\HumusAmqp\ParallelMessage`. This is usually helpful
+for queries to be executed parallel.
+ 
+### Example code
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace My\App;
+
+use Humus\Amqp\JsonRpc\ResponseCollection;
+use Prooph\Common\Messaging\Message;
+use Prooph\Common\Messaging\Query;
+use Prooph\ServiceBus\Message\HumusAmqp\ParallelMessage;
+
+class MyParallelQuery extends Query implements ParallelMessage
+{
+    private $messages = [];
+    
+    public static function withQueries(Message ...$queries): MyParallelQuery
+    {
+        $self = new self();
+        $self->messages = $queries;
+        
+        return $self;
+    }
+    
+    protected function setPayload(array $payload): void
+    {
+    }
+    
+    public function messages(): array
+    {
+        return $this->messages;
+    }
+}
+
+$query1 = new SomeQuery(['foo' => 'bar']);
+$query2 = new SomeOtherQuery(['foo' => 'baz']);
+
+$query = MyParallelQuery::withQueries($query1, $query2);
+
+$promise = $this->eventBus->dispatch($query);
+$promise->then(function (ResponseCollection $collection): void {
+    // do something
+});
+
+$promise->otherwise(function () {
+    // do something else
+});
+```
+
+The result of a parallel query will always return a response collection object.
