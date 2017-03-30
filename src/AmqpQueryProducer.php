@@ -1,8 +1,8 @@
 <?php
-/*
+/**
  * This file is part of the prooph/humus-amqp-producer.
- * (c) 2016 prooph software GmbH <contact@prooph.de>
- * (c) 2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
+ * (c) 2016-2017 prooph software GmbH <contact@prooph.de>
+ * (c) 2016-2017 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -35,14 +35,31 @@ final class AmqpQueryProducer implements MessageProducer
     private $messageConverter;
 
     /**
+     * @var array
+     */
+    private $messageNameToServerNameMap;
+
+    /**
+     * @var string|null
+     */
+    private $defaultServerName;
+
+    /**
      * @var float
      */
     private $timeout;
 
-    public function __construct(JsonRpcClient $client, MessageConverter $messageConverter, float $timeout = 0.0)
-    {
+    public function __construct(
+        JsonRpcClient $client,
+        MessageConverter $messageConverter,
+        array $messageNameToServerNameMap,
+        string $defaultServerName = null,
+        float $timeout = 0.0
+    ) {
         $this->client = $client;
         $this->messageConverter = $messageConverter;
+        $this->messageNameToServerNameMap = $messageNameToServerNameMap;
+        $this->defaultServerName = $defaultServerName;
         $this->timeout = $timeout;
     }
 
@@ -68,42 +85,46 @@ final class AmqpQueryProducer implements MessageProducer
                 $data = $this->arrayFromMessage($parallelMessage);
 
                 $this->client->addRequest(new JsonRpcRequest(
-                    'server',
-                    $message->messageName(),
+                    $this->serverName($parallelMessage->messageName()),
+                    $parallelMessage->messageName(),
                     $data,
-                    $message->uuid()->toString(),
-                    $message->messageName(),
+                    $parallelMessage->uuid()->toString(),
+                    $parallelMessage->messageName(),
                     0,
-                    $message->createdAt()->getTimestamp()
+                    $parallelMessage->createdAt()->getTimestamp()
                 ));
             }
-        } else {
-            $data = $this->arrayFromMessage($message);
 
-            $messageId = $message->uuid()->toString();
+            $responseCollection = $this->client->getResponseCollection($this->timeout);
 
-            $this->client->addRequest(new JsonRpcRequest(
-                'server',
-                $message->messageName(),
-                $data,
-                $messageId,
-                $message->messageName(),
-                0,
-                $message->createdAt()->getTimestamp()
-            ));
+            $deferred->resolve($responseCollection);
 
-            $results = $this->client->getResponseCollection($this->timeout);
-
-            if ($results instanceof Error) {
-                $deferred->reject($results->message());
-            }
-
-            $response = $results->getResponse($messageId);
-
-            $deferred->resolve($response->result());
+            return;
         }
 
-        $deferred->resolve($this->client->getResponseCollection($this->timeout));
+        $data = $this->arrayFromMessage($message);
+
+        $messageId = $message->uuid()->toString();
+
+        $this->client->addRequest(new JsonRpcRequest(
+            $this->serverName($message->messageName()),
+            $message->messageName(),
+            $data,
+            $messageId,
+            $message->messageName(),
+            0,
+            $message->createdAt()->getTimestamp()
+        ));
+
+        $responseCollection = $this->client->getResponseCollection($this->timeout);
+
+        $response = $responseCollection->getResponse($messageId);
+
+        if ($response->isError()) {
+            $deferred->reject($response->error()->message());
+        }
+
+        $deferred->resolve($response->result());
     }
 
     private function arrayFromMessage(Message $message): array
@@ -115,5 +136,16 @@ final class AmqpQueryProducer implements MessageProducer
         $messageData['created_at'] = $message->createdAt()->format('Y-m-d\TH:i:s.u');
 
         return $messageData;
+    }
+
+    private function serverName(string $messageName): string
+    {
+        if (isset($this->messageNameToServerNameMap[$messageName])) {
+            return $this->messageNameToServerNameMap[$messageName];
+        } elseif (null !== $this->defaultServerName) {
+            return $this->defaultServerName;
+        }
+
+        throw new RuntimeException('No server found for ' . $messageName);
     }
 }
