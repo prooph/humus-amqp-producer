@@ -14,9 +14,10 @@ namespace ProophTest\ServiceBus\Message\HumusAmqp;
 
 use Humus\Amqp\Constants;
 use Humus\Amqp\Producer;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
 use Prooph\Common\Messaging\MessageConverter;
+use Prooph\ServiceBus\Exception\RuntimeException;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpMessageProducer;
 use React\Promise\Deferred;
 
@@ -25,7 +26,7 @@ class AmqpMessageProducerTest extends TestCase
     /**
      * @test
      */
-    public function it_publishes_messages()
+    public function it_publishes_messages(): void
     {
         $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
 
@@ -69,9 +70,9 @@ class AmqpMessageProducerTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_deferred_passed()
+    public function it_throws_exception_when_deferred_passed(): void
     {
-        $this->expectException(\Prooph\ServiceBus\Exception\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Prooph\ServiceBus\Message\HumusAmqp\AmqpMessageProducer cannot handle query messages which require future responses.');
 
         $producer = $this->prophesize(Producer::class);

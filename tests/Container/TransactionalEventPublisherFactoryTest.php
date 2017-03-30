@@ -14,7 +14,7 @@ namespace ProophTest\ServiceBus\Message\HumusAmqp\Container;
 
 use Humus\Amqp\Producer;
 use Interop\Container\ContainerInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\TransactionalEventPublisherFactory;
 use Prooph\ServiceBus\Message\HumusAmqp\TransactionalEventPublisher;
@@ -24,7 +24,7 @@ class TransactionalEventPublisherFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_plugin()
+    public function it_creates_plugin(): void
     {
         $eventBus = $this->prophesize(EventBus::class);
 
@@ -66,7 +66,7 @@ class TransactionalEventPublisherFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_plugin_via_call_static()
+    public function it_creates_plugin_via_call_static(): void
     {
         $eventBus = $this->prophesize(EventBus::class);
 
@@ -109,7 +109,7 @@ class TransactionalEventPublisherFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_exception_when_invalid_container_given()
+    public function it_throws_exception_when_invalid_container_given(): void
     {
         $this->expectException(\Prooph\ServiceBus\Exception\InvalidArgumentException::class);
 

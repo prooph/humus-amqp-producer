@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace ProophTest\ServiceBus\Message\HumusAmqp;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prooph\ServiceBus\Message\HumusAmqp\DelayedCommand;
 
 class DelayedCommandTest extends TestCase
@@ -20,7 +20,7 @@ class DelayedCommandTest extends TestCase
     /**
      * @test
      */
-    public function it_converts_from_and_to_array()
+    public function it_converts_from_and_to_array(): void
     {
         $time = (string) microtime(true);
         if (false === strpos($time, '.')) {
@@ -50,7 +50,7 @@ class DelayedCommandTest extends TestCase
     /**
      * @test
      */
-    public function it_can_call_execute_at()
+    public function it_can_call_execute_at(): void
     {
         $command = $this->delayedComamnd();
         $later = $command->createdAt()->modify('+5 seconds');
@@ -59,10 +59,7 @@ class DelayedCommandTest extends TestCase
         $this->assertEquals(5000, $command->delay());
     }
 
-    /**
-     * @return DelayedCommand
-     */
-    private function delayedComamnd()
+    private function delayedComamnd(): DelayedCommand
     {
         return new class() extends DelayedCommand {
             protected $messageName = 'test-delayed-command';
