@@ -145,7 +145,7 @@ return [
     'dependencies' => [
         'factories' => [
             'amqp_event_producer_plugin' => [
-                \Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpMessageProducerFactory,
+                \Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpMessageProducerPluginFactory:class,
                 'amqp_event_producer'
             ],
         ],
