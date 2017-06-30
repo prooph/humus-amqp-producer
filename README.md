@@ -8,7 +8,7 @@ Use [HumusAmqp](https://github.com/prolic/HumusAmqp) as message producer for [Pr
 
 ## Differences betweeen v1 and v2
 
-v1 is compatible with [Prooph\ServiceBus](http://github.com/prooph/service-bus)` 5.0 while the newer v2
+v1 is compatible with [Prooph\ServiceBus](http://github.com/prooph/service-bus) 5.0 while the newer v2
 supports 6.0 of `Prooph\ServiceBus`.
 
 ## Installation
