@@ -101,9 +101,19 @@ final class TransactionalEventPublisher extends AbstractPlugin
 
                 if ($recordedEvents instanceof Stream) {
                     // stream was created
+                    if ($actionEvent->getParam('streamExistsAlready', false)) {
+                        return;
+                    }
+
                     $recordedEvents = $recordedEvents->streamEvents();
                 } else {
                     // events were appended
+                    if ($actionEvent->getParam('streamNotFound', false)
+                        || $actionEvent->getParam('concurrencyException', false)
+                    ) {
+                        return;
+                    }
+
                     $recordedEvents = $actionEvent->getParam('streamEvents', $fallback);
                 }
 
