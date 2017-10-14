@@ -31,7 +31,7 @@ how to configure HumusAmqp, take a look at the [HumusAmqp Docs](https://humusamq
 
 ## Support
 
-- Ask questions on [prooph-users](https://groups.google.com/forum/?hl=de#!forum/prooph) google group.
+- Ask questions on Stack Overflow tagged with [#prooph](https://stackoverflow.com/questions/tagged/prooph).
 - File issues at [https://github.com/prooph/humus-amqp-producer/issues](https://github.com/prooph/humus-amqp-producer/issues).
 - Say hello in the [prooph gitter](https://gitter.im/prooph/improoph) chat.
 
