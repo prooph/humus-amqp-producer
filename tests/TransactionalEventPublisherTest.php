@@ -268,4 +268,45 @@ class TransactionalEventPublisherTest extends TestCase
             // ignore
         }
     }
+
+    /**
+     * @test
+     */
+    public function it_publish_after_rollback(): void
+    {
+        $eventStore = $this->prophesize(TransactionalEventStore::class);
+        $eventStore = new TransactionalActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
+
+        $streamName = new StreamName('test-stream');
+
+        $event1 = new TestDomainEvent(['foo' => 'baz']);
+        $event2 = new TestDomainEvent(['foo' => 'bar']);
+
+        $eventBus = $this->prophesize(EventBus::class);
+        $eventBus->dispatch($event1)->willThrow(\Exception::class);
+        $eventBus->dispatch($event2)->shouldBeCalled();
+
+        $producer = $this->prophesize(Producer::class);
+
+        $plugin = new TransactionalEventPublisher($eventBus->reveal(), $producer->reveal());
+        $plugin->attachToEventStore($eventStore);
+
+        $eventStore->beginTransaction();
+
+        $eventStore->create(
+            new Stream($streamName, new ArrayIterator())
+        );
+
+        $eventStore->appendTo($streamName, new ArrayIterator([$event1]));
+
+        try {
+            $eventStore->commit();
+        } catch (\Throwable $exception) {
+            $eventStore->rollback();
+        }
+
+        $eventStore->appendTo($streamName, new ArrayIterator([$event2]));
+
+        $eventStore->commit();
+    }
 }
