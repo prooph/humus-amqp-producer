@@ -272,7 +272,7 @@ class TransactionalEventPublisherTest extends TestCase
     /**
      * @test
      */
-    public function it_publish_after_rollback(): void
+    public function it_publishes_after_rollback(): void
     {
         $eventStore = $this->prophesize(TransactionalEventStore::class);
         $eventStore = new TransactionalActionEventEmitterEventStore($eventStore->reveal(), new ProophActionEventEmitter());
@@ -304,6 +304,8 @@ class TransactionalEventPublisherTest extends TestCase
         } catch (\Throwable $exception) {
             $eventStore->rollback();
         }
+
+        $eventStore->beginTransaction();
 
         $eventStore->appendTo($streamName, new ArrayIterator([$event2]));
 
