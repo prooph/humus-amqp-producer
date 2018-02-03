@@ -54,7 +54,7 @@ final class TransactionalEventPublisher extends AbstractPlugin
         $this->listenerHandlers[] = $eventStore->attach(
             ActionEventEmitterEventStore::EVENT_APPEND_TO,
             function (ActionEvent $event) use ($eventStore): void {
-                if (!$eventStore instanceof TransactionalActionEventEmitterEventStore) {
+                if (! $eventStore instanceof TransactionalActionEventEmitterEventStore) {
                     $this->onEventStoreCommitPost($event);
                 } else {
                     $this->queuedActionEvents[] = $event;
@@ -64,7 +64,7 @@ final class TransactionalEventPublisher extends AbstractPlugin
         $this->listenerHandlers[] = $eventStore->attach(
             ActionEventEmitterEventStore::EVENT_CREATE,
             function (ActionEvent $event) use ($eventStore): void {
-                if (!$eventStore instanceof TransactionalActionEventEmitterEventStore) {
+                if (! $eventStore instanceof TransactionalActionEventEmitterEventStore) {
                     $this->onEventStoreCommitPost($event);
                 } else {
                     $this->queuedActionEvents[] = $event;
@@ -93,7 +93,7 @@ final class TransactionalEventPublisher extends AbstractPlugin
     {
         $this->queuedActionEvents[] = $actionEvent;
 
-        if (!$this->inTransaction) {
+        if (! $this->inTransaction) {
             $this->inTransaction = true;
 
             while ($actionEvent = array_shift($this->queuedActionEvents)) {

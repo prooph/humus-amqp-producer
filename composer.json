@@ -34,9 +34,10 @@
         "prooph/service-bus" : "^6.0"
     },
     "require-dev": {
-        "container-interop/container-interop": "^1.1",
+        "psr/container": "^1.0",
         "phpspec/prophecy": "^1.7",
-        "prooph/php-cs-fixer-config": "^0.1.1",
+        "friendsofphp/php-cs-fixer": "2.8.4",
+        "prooph/php-cs-fixer-config": "^0.2.1",
         "phpunit/phpunit": "^6.0",
         "prooph/event-store" : "^7.0",
         "react/promise": "^2.4.1",
