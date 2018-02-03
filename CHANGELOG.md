@@ -1,7 +1,22 @@
 # Change Log
 
-## [v2.0.1](https://github.com/prooph/humus-amqp-producer/tree/v2.0.1)
+## [v2.1.0](https://github.com/prooph/humus-amqp-producer/tree/v2.1.0)
 
+[Full Changelog](https://github.com/prooph/humus-amqp-producer/compare/v2.0.1...v2.1.0)
+
+**Fixed bugs:**
+
+- TransactionalEventPublisher not publish events after exception [\#20](https://github.com/prooph/humus-amqp-producer/issues/20)
+
+**Closed issues:**
+
+- Dependency conflict on prooph/humus-amqp-producer ^2.0 install [\#19](https://github.com/prooph/humus-amqp-producer/issues/19)
+
+**Merged pull requests:**
+
+- master [\#21](https://github.com/prooph/humus-amqp-producer/pull/21) ([melodi-c](https://github.com/melodi-c))
+
+## [v2.0.1](https://github.com/prooph/humus-amqp-producer/tree/v2.0.1) (2017-07-08)
 [Full Changelog](https://github.com/prooph/humus-amqp-producer/compare/v2.0.0...v2.0.1)
 
 **Fixed bugs:**
