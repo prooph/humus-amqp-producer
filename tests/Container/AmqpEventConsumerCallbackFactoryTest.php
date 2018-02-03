@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace ProophTest\ServiceBus\Message\HumusAmqp\Container;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\MessageFactory;
 use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpEventConsumerCallback;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpEventConsumerCallbackFactory;
+use Psr\Container\ContainerInterface;
 
 class AmqpEventConsumerCallbackFactoryTest extends TestCase
 {

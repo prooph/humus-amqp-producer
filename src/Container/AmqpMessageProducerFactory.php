@@ -16,10 +16,10 @@ use Interop\Config\ConfigurationTrait;
 use Interop\Config\ProvidesDefaultOptions;
 use Interop\Config\RequiresConfigId;
 use Interop\Config\RequiresMandatoryOptions;
-use Interop\Container\ContainerInterface;
 use Prooph\Common\Messaging\NoOpMessageConverter;
 use Prooph\ServiceBus\Exception;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpMessageProducer;
+use Psr\Container\ContainerInterface;
 
 final class AmqpMessageProducerFactory implements ProvidesDefaultOptions, RequiresConfigId, RequiresMandatoryOptions
 {

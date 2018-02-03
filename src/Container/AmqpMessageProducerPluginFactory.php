@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Prooph\ServiceBus\Message\HumusAmqp\Container;
 
-use Interop\Container\ContainerInterface;
 use Prooph\ServiceBus\Exception;
 use Prooph\ServiceBus\Plugin\MessageProducerPlugin;
+use Psr\Container\ContainerInterface;
 
 final class AmqpMessageProducerPluginFactory
 {

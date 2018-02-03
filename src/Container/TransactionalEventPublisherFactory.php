@@ -16,10 +16,10 @@ use Interop\Config\ConfigurationTrait;
 use Interop\Config\ProvidesDefaultOptions;
 use Interop\Config\RequiresConfigId;
 use Interop\Config\RequiresMandatoryOptions;
-use Interop\Container\ContainerInterface;
 use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Exception;
 use Prooph\ServiceBus\Message\HumusAmqp\TransactionalEventPublisher;
+use Psr\Container\ContainerInterface;
 
 final class TransactionalEventPublisherFactory implements
     ProvidesDefaultOptions,

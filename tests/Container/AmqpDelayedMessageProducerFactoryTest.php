@@ -13,11 +13,11 @@ declare(strict_types=1);
 namespace ProophTest\ServiceBus\Message\HumusAmqpDelayed\Container;
 
 use Humus\Amqp\Producer;
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\MessageConverter;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpDelayedMessageProducer;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpDelayedMessageProducerFactory;
+use Psr\Container\ContainerInterface;
 
 class AmqpDelayedMessageProducerFactoryTest extends TestCase
 {

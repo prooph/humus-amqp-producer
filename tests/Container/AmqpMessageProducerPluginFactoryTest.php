@@ -12,13 +12,12 @@ declare(strict_types=1);
 
 namespace ProophTest\ServiceBus\Message\HumusAmqpDelayed\Container;
 
-use Humus\Amqp\Producer;
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prooph\ServiceBus\Async\MessageProducer;
 use Prooph\ServiceBus\Exception\InvalidArgumentException;
 use Prooph\ServiceBus\Message\HumusAmqp\Container\AmqpMessageProducerPluginFactory;
 use Prooph\ServiceBus\Plugin\MessageProducerPlugin;
+use Psr\Container\ContainerInterface;
 
 class AmqpMessageProducerPluginFactoryTest extends TestCase
 {

@@ -15,11 +15,11 @@ namespace Prooph\ServiceBus\Message\HumusAmqp\Container;
 use Interop\Config\ConfigurationTrait;
 use Interop\Config\ProvidesDefaultOptions;
 use Interop\Config\RequiresConfigId;
-use Interop\Container\ContainerInterface;
 use Prooph\Common\Messaging\FQCNMessageFactory;
 use Prooph\ServiceBus\EventBus;
 use Prooph\ServiceBus\Exception;
 use Prooph\ServiceBus\Message\HumusAmqp\AmqpEventConsumerCallback;
+use Psr\Container\ContainerInterface;
 
 final class AmqpEventConsumerCallbackFactory implements ProvidesDefaultOptions, RequiresConfigId
 {
