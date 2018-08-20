@@ -6,6 +6,12 @@ Use [HumusAmqp](https://github.com/prolic/HumusAmqp) as message producer for [Pr
 [![Coverage Status](https://coveralls.io/repos/prooph/humus-amqp-producer/badge.svg?branch=master&service=github)](https://coveralls.io/github/prooph/humus-amqp-producer?branch=master)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/prooph/improoph)
 
+## Important
+
+This library will receive support until December 31, 2019 and will then be deprecated.
+
+For further information see the official announcement here: [https://www.sasaprolic.com/2018/08/the-future-of-prooph-components.html](https://www.sasaprolic.com/2018/08/the-future-of-prooph-components.html)
+
 ## Differences betweeen v1 and v2
 
 v1 is compatible with [Prooph\ServiceBus](http://github.com/prooph/service-bus) 5.0 while the newer v2
