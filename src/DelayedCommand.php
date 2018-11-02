@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the prooph/humus-amqp-producer.
  * (c) 2016-2018 prooph software GmbH <contact@prooph.de>
@@ -38,7 +39,7 @@ abstract class DelayedCommand extends Command implements DelayedMessage
      */
     public function delay(): int
     {
-        return (int) floor(((float) $this->executeAt->format('U.u') - (float) $this->createdAt->format('U.u')) * 1000);
+        return (int) \floor(((float) $this->executeAt->format('U.u') - (float) $this->createdAt->format('U.u')) * 1000);
     }
 
     public static function fromArray(array $messageData): DomainMessage

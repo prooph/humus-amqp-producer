@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the prooph/humus-amqp-producer.
  * (c) 2016-2018 prooph software GmbH <contact@prooph.de>
@@ -54,7 +55,7 @@ final class AmqpDelayedMessageProducer implements MessageProducer
     public function __invoke(Message $message, Deferred $deferred = null): void
     {
         if (! $message instanceof DelayedMessage) {
-            throw new RuntimeException(sprintf(
+            throw new RuntimeException(\sprintf(
                 'Message is not a delayed message (instance of %s)',
                 DelayedMessage::class
             ));
