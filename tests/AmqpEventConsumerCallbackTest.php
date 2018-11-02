@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the prooph/humus-amqp-producer.
  * (c) 2016-2018 prooph software GmbH <contact@prooph.de>
@@ -30,8 +31,8 @@ class AmqpEventConsumerCallbackTest extends TestCase
      */
     public function it_acks_message_when_all_good(): void
     {
-        $time = (string) microtime(true);
-        if (false === strpos($time, '.')) {
+        $time = (string) \microtime(true);
+        if (false === \strpos($time, '.')) {
             $time .= '.0000';
         }
         $now = \DateTimeImmutable::createFromFormat('U.u', $time);
@@ -120,8 +121,8 @@ class AmqpEventConsumerCallbackTest extends TestCase
      */
     public function it_rejects_message_when_exception_occurred(): void
     {
-        $time = (string) microtime(true);
-        if (false === strpos($time, '.')) {
+        $time = (string) \microtime(true);
+        if (false === \strpos($time, '.')) {
             $time .= '.0000';
         }
         $now = \DateTimeImmutable::createFromFormat('U.u', $time);
@@ -166,8 +167,8 @@ class AmqpEventConsumerCallbackTest extends TestCase
      */
     public function it_rejects_and_requeues_message_when_concurrency_exception_occurred(): void
     {
-        $time = (string) microtime(true);
-        if (false === strpos($time, '.')) {
+        $time = (string) \microtime(true);
+        if (false === \strpos($time, '.')) {
             $time .= '.0000';
         }
         $now = \DateTimeImmutable::createFromFormat('U.u', $time);

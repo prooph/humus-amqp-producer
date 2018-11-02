@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the prooph/humus-amqp-producer.
  * (c) 2016-2018 prooph software GmbH <contact@prooph.de>
@@ -20,7 +21,6 @@ use Humus\Amqp\Exchange;
 use Humus\Amqp\JsonRpc\JsonRpcClient;
 use Humus\Amqp\JsonRpc\JsonRpcResponse;
 use Humus\Amqp\JsonRpc\ResponseCollection;
-use Humus\Amqp\Producer;
 use Humus\Amqp\Queue;
 use PHPUnit\Framework\TestCase;
 use Prooph\Common\Messaging\Message;
@@ -52,7 +52,7 @@ class AmqpQueryProducerTest extends TestCase
         $envelope->getHeader('jsonrpc')->willReturn(JsonRpcResponse::JSONRPC_VERSION)->shouldBeCalled();
         $envelope->getContentEncoding()->willReturn('UTF-8')->shouldBeCalled();
         $envelope->getContentType()->willReturn('application/json')->shouldBeCalled();
-        $envelope->getBody()->willReturn(json_encode($result))->shouldBeCalled();
+        $envelope->getBody()->willReturn(\json_encode($result))->shouldBeCalled();
         $envelope->getCorrelationId()->willReturn($message->uuid()->toString())->shouldBeCalled();
 
         $options = $this->prophesize(ConnectionOptions::class);
@@ -190,14 +190,14 @@ class AmqpQueryProducerTest extends TestCase
         $envelope1->getHeader('jsonrpc')->willReturn(JsonRpcResponse::JSONRPC_VERSION)->shouldBeCalled();
         $envelope1->getContentEncoding()->willReturn('UTF-8')->shouldBeCalled();
         $envelope1->getContentType()->willReturn('application/json')->shouldBeCalled();
-        $envelope1->getBody()->willReturn(json_encode($result1))->shouldBeCalled();
+        $envelope1->getBody()->willReturn(\json_encode($result1))->shouldBeCalled();
         $envelope1->getCorrelationId()->willReturn($message1->uuid()->toString())->shouldBeCalled();
 
         $envelope2 = $this->prophesize(Envelope::class);
         $envelope2->getHeader('jsonrpc')->willReturn(JsonRpcResponse::JSONRPC_VERSION)->shouldBeCalled();
         $envelope2->getContentEncoding()->willReturn('UTF-8')->shouldBeCalled();
         $envelope2->getContentType()->willReturn('application/json')->shouldBeCalled();
-        $envelope2->getBody()->willReturn(json_encode($result2))->shouldBeCalled();
+        $envelope2->getBody()->willReturn(\json_encode($result2))->shouldBeCalled();
         $envelope2->getCorrelationId()->willReturn($message2->uuid()->toString())->shouldBeCalled();
 
         $options = $this->prophesize(ConnectionOptions::class);

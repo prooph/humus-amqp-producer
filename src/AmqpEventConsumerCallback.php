@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the prooph/humus-amqp-producer.
  * (c) 2016-2018 prooph software GmbH <contact@prooph.de>
@@ -41,7 +42,7 @@ final class AmqpEventConsumerCallback
 
     public function __invoke(Envelope $envelope, Queue $queue): DeliveryResult
     {
-        $data = json_decode($envelope->getBody(), true);
+        $data = \json_decode($envelope->getBody(), true);
 
         if (! isset($data['created_at'])) {
             return DeliveryResult::MSG_REJECT();

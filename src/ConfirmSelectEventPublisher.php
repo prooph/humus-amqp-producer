@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the prooph/humus-amqp-producer.
  * (c) 2016-2018 prooph software GmbH <contact@prooph.de>
@@ -102,7 +103,7 @@ final class ConfirmSelectEventPublisher extends AbstractPlugin
         if (! $this->inConfirmSelectMode) {
             $this->inConfirmSelectMode = true;
 
-            while ($actionEvent = array_shift($this->queuedActionEvents)) {
+            while ($actionEvent = \array_shift($this->queuedActionEvents)) {
                 $fallback = new ArrayIterator();
                 $recordedEvents = $actionEvent->getParam('stream');
 

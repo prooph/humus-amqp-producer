@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the prooph/humus-amqp-producer.
  * (c) 2016-2018 prooph software GmbH <contact@prooph.de>
@@ -22,8 +23,8 @@ class DelayedCommandTest extends TestCase
      */
     public function it_converts_from_and_to_array(): void
     {
-        $time = (string) microtime(true);
-        if (false === strpos($time, '.')) {
+        $time = (string) \microtime(true);
+        if (false === \strpos($time, '.')) {
             $time .= '.0000';
         }
         $now = \DateTimeImmutable::createFromFormat('U.u', $time);
