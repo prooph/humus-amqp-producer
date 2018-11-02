@@ -36,15 +36,13 @@
     "require-dev": {
         "psr/container": "^1.0",
         "phpspec/prophecy": "^1.7",
-        "friendsofphp/php-cs-fixer": "2.8.4",
-        "prooph/php-cs-fixer-config": "^0.2.1",
+        "prooph/php-cs-fixer-config": "^0.3",
         "phpunit/phpunit": "^6.0",
         "prooph/event-store" : "^7.0",
         "react/promise": "^2.4.1",
         "sandrokeil/interop-config": "^2.0.1",
         "satooshi/php-coveralls": "^1.0",
-        "prooph/bookdown-template": "^0.2.3",
-        "malukenho/docheader": "^0.1.4"
+        "prooph/bookdown-template": "^0.2.3"
     },
     "suggest" : {
         "prooph/event-store": "^7.0 let the EventBus dispatch persisted domain events",
