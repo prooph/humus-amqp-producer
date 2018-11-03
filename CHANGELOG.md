@@ -1,7 +1,14 @@
 # Change Log
 
-## [v2.1.0](https://github.com/prooph/humus-amqp-producer/tree/v2.1.0)
+## [v2.1.1](https://github.com/prooph/humus-amqp-producer/tree/v2.1.1)
 
+[Full Changelog](https://github.com/prooph/humus-amqp-producer/compare/v2.1.0...v2.1.1)
+
+**Merged pull requests:**
+
+- beberlei/assert v3 [\#23](https://github.com/prooph/humus-amqp-producer/pull/23) ([basz](https://github.com/basz))
+
+## [v2.1.0](https://github.com/prooph/humus-amqp-producer/tree/v2.1.0) (2018-02-03)
 [Full Changelog](https://github.com/prooph/humus-amqp-producer/compare/v2.0.1...v2.1.0)
 
 **Fixed bugs:**
